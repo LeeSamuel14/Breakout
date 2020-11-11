@@ -2,6 +2,7 @@ var Breakout = Breakout|| {};
 
 Breakout.PreloadState = {
     preload: function(){
+        this.load.image('board', 'assets/images/board-scale.png');
        /*  this.preloadBar = this.game.add.sprite(this.game.world.centerX,  this.game.world.centerY+128, 'preload');
         this.preloadBar.anchor.setTo(0.5);
         this.load.setPreloadSprite(this.preloadBar);
