@@ -3,8 +3,11 @@ var Breakout = Breakout || {};
 Breakout.Board = function(game, x, y, key, frame){
     Phaser.Sprite.call(this, game, x, y, key, frame);
     this.game = game;
-    this.scale.setTo(0.2);
-    //this.game.physics.enable(this);
+    this.game.physics.arcade.enable(this);
+    console.log(this.anchor);
+    //this.anchor.setTo(0.5);
+    //this.game.physics.arcade.setBoundsToWorld();
+    //console.log(this.body);
 };
 
 Breakout.Board.prototype = Object.create(Phaser.Sprite.prototype);
