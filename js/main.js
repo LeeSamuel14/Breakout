@@ -1,5 +1,5 @@
 var Breakout = Breakout || {};
-Breakout.game = new Phaser.Game(400, 600, Phaser.AUTO);
+Breakout.game = new Phaser.Game(600, 800, Phaser.AUTO);
 
 Breakout.game.state.add('BootState', Breakout.BootState);
 Breakout.game.state.add('PreloadState', Breakout.PreloadState);

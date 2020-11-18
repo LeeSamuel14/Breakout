@@ -4,7 +4,11 @@ Breakout.Board = function(game, x, y, key, frame){
     Phaser.Sprite.call(this, game, x, y, key, frame);
     this.game = game;
     this.game.physics.arcade.enable(this);
-    console.log(this.anchor);
+    this.body.collideWorldBounds = true;
+    this.body.bounce.setTo(1,1);
+    this.body.immovable = false;
+    //this.body.stopVelocityOnCollide = true;
+    //this.body.setSize(this.width - 800, this.height);
     //this.anchor.setTo(0.5);
     //this.game.physics.arcade.setBoundsToWorld();
     //console.log(this.body);
