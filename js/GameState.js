@@ -17,7 +17,6 @@ Breakout.GameState = {
         this.initBall();
         this.initBrickValues();
         this.initBricks();
-        this.initSliderGraphics();
         this.initGameText();
         this.debugMethod();
     },
@@ -25,11 +24,7 @@ Breakout.GameState = {
         this.moveBoard_desktop();
         this.game.physics.arcade.collide(this.board, this.ball, this.ballTouchBoard, null, this);
         this.game.physics.arcade.collide(this.bricksGroup, this.ball, this.ballTouchBrick, null, this);
-        if(this.ball && this.board){
-            if(this.ball.y > this.board.y + 80){
-               //this.ball.kill();
-            }
-        }
+        this.checkWinOrLose();
     },
     initConstValues: function(){
         this.BOARD_SPEED = 10;
@@ -41,15 +36,15 @@ Breakout.GameState = {
         this.BOARD_X = this.game.width/2;
         this.BOARD_Y = this.game.height - this.game.height/5;
         this.SPRITESHEET = 'spritesheet_breakout';
-        this.SPRITESHEET_SCALE = 0.25;
+        this.SPRITESHEET_SCALE = 0.15;
+        this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
+        this.BRICKS_PER_LINE = 8;
     },
     initControls_mobile: function(){
         this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'slider');
-        //this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, this.SPRITESHEET,null , null, 'board','board','board','board');
         this.dragButton.scale.setTo(0.25, 0.6);
         this.dragButton.inputEnabled = true;
         this.dragButton.input.enableDrag();
-
         this.dragButton.events.onDragUpdate.add(this.moveBoard_mobile, this);
     },
     initControls_desktop: function(){
@@ -61,11 +56,9 @@ Breakout.GameState = {
     },
     initBoard: function(){
         this.boardGroup = this.game.add.group();
-        this.board = new Breakout.Board(this.game, this.BOARD_X, this.BOARD_Y,this.SPRITESHEET ,'board-fire');
-        this.board.scale.setTo(this.SPRITESHEET_SCALE);
+        this.board = new Breakout.Board(this.game, this.BOARD_X, this.BOARD_Y,this.SPRITESHEET ,'board');
+        this.board.scale.setTo(this.SPRITESHEET_SCALE * this.SPRITESHEET_SCALE_UP_BOARD);
         this.boardGroup.add(this.board);
-        this.board.body.onCollide = new Phaser.Signal();
-        this.board.body.onCollide.add(this.stopBoard, this);
     },
     initBall: function(){
         this.ballGroup = this.game.add.group();
@@ -75,40 +68,26 @@ Breakout.GameState = {
     },
     initBrickValues: function(){
         this.bricksData = JSON.parse(this.game.cache.getText('bricks'));
-        console.log(this.bricksData.bricks.length);
-        /* this.brickValues = {};
-        this.brickValues.colours = ['blue-tile'];
-        this.brickValues.diff */
+        this.bricksDestroyed = 0;
     },
     initBricks: function(){
         var brick_width = 12.5;
         var brick_height = 64;
 
         this.bricksGroup = this.game.add.group();
-        for(var i = 0; i < 1 * 10; i++){
+        for(var i = 0; i < this.currentLevel * this.BRICKS_PER_LINE; i++){ //this.currentLevel * 6 //bricks per level
             var randomNumber = Math.floor(Math.random()*(this.bricksData.bricks.length));
             var brickData = this.bricksData.bricks[randomNumber];
             var brick = new Breakout.Brick(this.game, brick_width, brick_height, this.SPRITESHEET, brickData.name);
             brick.brickData = brickData;
             brick.scale.setTo(this.SPRITESHEET_SCALE);
             this.bricksGroup.add(brick);
-            brick_width += 96;
-            if(brick_width + 96 > this.game.width){
+            brick_width += 70;
+            if(brick_width + 70 > this.game.width){
                 brick_width = 12.5;
-                brick_height += 32;
+                brick_height += 28;
             }
         }
-        /* this.testBrick = new Breakout.Brick(this.game, 100, 200, this.SPRITESHEET, 'blue-tile');
-        this.testBrick.scale.setTo(this.SPRITESHEET_SCALE);
-        console.log(this.testBrick.width);
-        console.log(this.testBrick.height);
-        this.bricksGroup.add(this.testBrick); */
-    },
-    initSliderGraphics: function(){
-        /* this.sliderGraphic = this.game.add.graphics();
-        this.sliderGraphic.beginFill(0xFFFFFF);
-        this.sliderGraphic.drawRect(0, this.game.height -  this.game.height/6 + 60, this.game.width, 10);
-        this.sliderGraphic.endFill(); */
     },
     initGameText: function(){
         this.score = 0;
@@ -123,13 +102,6 @@ Breakout.GameState = {
         else if((this.inputCursorKeys.right.isDown || this.WASD_Keys['right'].isDown) && this.board.x < (this.game.width - this.board.width) ){
             this.board.x += this.BOARD_SPEED;
         }
-        
-        /* if(this.board.worldPosition.x < -70){
-            this.board.x = -70;//this.game.width - 50;
-        }
-        else if(this.board.worldPosition.x > this.game.width - 180){
-            this.board.x = this.game.width - 180;
-        } */
         this.dragButton.x = this.board.x;
     },
     moveBoard_mobile: function(){
@@ -144,28 +116,33 @@ Breakout.GameState = {
         this.board.x = this.dragButton.x;
         
     },
-    ballTouchBoard: function(){
-        //console.log('touching');
-        //this.ball.body.velocity.setTo(this.ball.body.velocity.x,-this.ball.body.velocity.y);
-       // console.log(this.board.body.checkCollision);//.dispatch(this.stopBoard, this);
-    },
+    ballTouchBoard: function(){},
     ballTouchBrick: function(ball, brick){
         if(brick.alpha === 1){
             brick.loadTexture(this.SPRITESHEET, brick.brickData.broken);
-            console.log("X");
         }
         brick.alpha -= 1/brick.brickData.difficulty;
         
         if(brick.alpha <= 0.3){
+            this.bricksDestroyed++;
             brick.kill();
             this.score += 100;
-            console.log(this.bricksGroup);
         }
-        this.score += 10;
+        else{
+            this.score += 10;
+        }
         this.text_Score.text = 'SCORE: '+ this.score;
     },
-    stopBoard: function(){
-        //console.log('colliding');
+    checkWinOrLose: function(){
+        if(this.ball && this.board){
+            if(this.ball.y > this.board.y + 80){
+               //this.ball.kill();
+               //this.state.start('WinLoseState', true, false, 1);
+            }
+        }
+        if(this.bricksDestroyed >= (this.currentLevel * this.BRICKS_PER_LINE) ){
+            this.state.start('WinLoseState', true, false, ++this.currentLevel);
+        }
     },
     debugMethod: function(){
     }
