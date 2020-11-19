@@ -14,11 +14,13 @@ Breakout.GameState = {
         //!Phaser.Device.desktop ? this.initControls_mobile() : this.initControls_desktop();
         this.initBoard();
         this.initBall();
+        this.initBricks();
         this.debugMethod();
     },
     update: function(){
         this.moveBoard_desktop();
-        this.game.physics.arcade.overlap(this.board, this.ball, this.boardTouchBall, null, this);
+        this.game.physics.arcade.collide(this.board, this.ball, this.ballTouchBoard, null, this);
+        this.game.physics.arcade.collide(this.bricksGroup, this.ball, this.ballTouchBrick, null, this);
         if(this.ball && this.board){
             if(this.ball.y > this.board.y + 80){
                //this.ball.kill();
@@ -30,15 +32,17 @@ Breakout.GameState = {
         this.BALL_SPEED  = 10;
         this.DRAG_BUTTON_X = this.game.width/2;
         this.DRAG_BUTTON_Y = this.game.height -  this.game.height/8;
-        this.BALL_X = 50;
-        this.BALL_Y = 80;
+        this.BALL_X = 300;
+        this.BALL_Y = 300;
         this.BOARD_X = this.game.width/2;
         this.BOARD_Y = this.game.height - this.game.height/5;
+        this.SPRITESHEET = 'spritesheet_breakout';
+        this.SPRITESHEET_SCALE = 0.25;
     },
     initControls_mobile: function(){
         this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'board');
-        this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'spritesheet_breakout',null , null, 'board','board','board','board');
-        this.dragButton.scale.setTo(0.25);
+        this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, this.SPRITESHEET,null , null, 'board','board','board','board');
+        this.dragButton.scale.setTo(this.SPRITESHEET_SCALE);
         this.dragButton.inputEnabled = true;
         this.dragButton.input.enableDrag();
         this.dragButton.events.onDragUpdate.add(this.moveBoard_mobile, this);
@@ -52,25 +56,45 @@ Breakout.GameState = {
     },
     initBoard: function(){
         this.boardGroup = this.game.add.group();
-        this.board = new Breakout.Board(this.game, this.BOARD_X, this.BOARD_Y,'spritesheet_breakout' ,'board-fire');
-        this.board.scale.setTo(0.25);
+        this.board = new Breakout.Board(this.game, this.BOARD_X, this.BOARD_Y,this.SPRITESHEET ,'board-fire');
+        this.board.scale.setTo(this.SPRITESHEET_SCALE);
         this.boardGroup.add(this.board);
         this.board.body.onCollide = new Phaser.Signal();
         this.board.body.onCollide.add(this.stopBoard, this);
     },
     initBall: function(){
         this.ballGroup = this.game.add.group();
-        this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, 'spritesheet_breakout', 'ball');
-        this.ball.scale.setTo(0.25);
+        this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, this.SPRITESHEET, 'ball');
+        this.ball.scale.setTo(this.SPRITESHEET_SCALE);
         this.ballGroup.add(this.ball);
+    },
+    initBricks: function(){
+        var brick_width = 12.5;
+        var brick_height = 0;
+
+        this.bricksGroup = this.game.add.group();
+        for(var i = 0; i < 5 * 10; i++){
+            var brick = new Breakout.Brick(this.game, brick_width, brick_height, this.SPRITESHEET, 'blue-tile');
+            brick.scale.setTo(this.SPRITESHEET_SCALE);
+            this.bricksGroup.add(brick);
+            brick_width += 96;
+            if(brick_width + 96 > this.game.width){
+                brick_width = 12.5;
+                brick_height += 32;
+            }
+        }
+        /* this.testBrick = new Breakout.Brick(this.game, 100, 200, this.SPRITESHEET, 'blue-tile');
+        this.testBrick.scale.setTo(this.SPRITESHEET_SCALE);
+        console.log(this.testBrick.width);
+        console.log(this.testBrick.height);
+        this.bricksGroup.add(this.testBrick); */
     },
     moveBoard_desktop: function(){
         if((this.inputCursorKeys.left.isDown || this.WASD_Keys['left'].isDown) && this.board.x > 0){
             this.board.x -= this.BOARD_SPEED;
         }
-        else if((this.inputCursorKeys.right.isDown || this.WASD_Keys['right'].isDown) && this.board.x < 475 ){
+        else if((this.inputCursorKeys.right.isDown || this.WASD_Keys['right'].isDown) && this.board.x < (this.game.width - this.board.width) ){
             this.board.x += this.BOARD_SPEED;
-            console.log(this.game.width);
         }
         
         /* if(this.board.worldPosition.x < -70){
@@ -83,20 +107,26 @@ Breakout.GameState = {
     },
     moveBoard_mobile: function(){
         var newBoard_X = arguments[2];
-        /* if( newBoard_X < -70){
-            this.dragButton.x = -70;
+        if( newBoard_X < 0){
+            this.dragButton.x = 0;
         }
-        else if(newBoard_X > this.game.width - 180){
-            this.dragButton.x = this.game.width - 180;
-        }
+        else if(newBoard_X > this.game.width - this.board.width){
+            this.dragButton.x = this.game.width - this.board.width;
+        } 
         this.dragButton.y = this.DRAG_BUTTON_Y;
-        this.board.x = this.dragButton.x; */
+        this.board.x = this.dragButton.x;
         
     },
-    boardTouchBall: function(){
+    ballTouchBoard: function(){
         //console.log('touching');
-        this.ball.body.velocity.setTo(this.ball.body.velocity.x,-this.ball.body.velocity.y);
+        //this.ball.body.velocity.setTo(this.ball.body.velocity.x,-this.ball.body.velocity.y);
        // console.log(this.board.body.checkCollision);//.dispatch(this.stopBoard, this);
+    },
+    ballTouchBrick: function(ball, brick){
+        brick.alpha -= 0.5;
+        if(brick.alpha <= 0){
+            brick.kill();
+        }
     },
     stopBoard: function(){
         //console.log('colliding');
