@@ -17,6 +17,8 @@ Breakout.GameState = {
         this.initBall();
         this.initBrickValues();
         this.initBricks();
+        this.initSliderGraphics();
+        this.initGameText();
         this.debugMethod();
     },
     update: function(){
@@ -33,7 +35,7 @@ Breakout.GameState = {
         this.BOARD_SPEED = 10;
         this.BALL_SPEED  = 10;
         this.DRAG_BUTTON_X = this.game.width/2;
-        this.DRAG_BUTTON_Y = this.game.height -  this.game.height/8;
+        this.DRAG_BUTTON_Y = this.game.height -  this.game.height/9;
         this.BALL_X = 300;
         this.BALL_Y = 300;
         this.BOARD_X = this.game.width/2;
@@ -42,11 +44,12 @@ Breakout.GameState = {
         this.SPRITESHEET_SCALE = 0.25;
     },
     initControls_mobile: function(){
-        this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'board');
-        this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, this.SPRITESHEET,null , null, 'board','board','board','board');
-        this.dragButton.scale.setTo(this.SPRITESHEET_SCALE);
+        this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'slider');
+        //this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, this.SPRITESHEET,null , null, 'board','board','board','board');
+        this.dragButton.scale.setTo(0.25, 0.6);
         this.dragButton.inputEnabled = true;
         this.dragButton.input.enableDrag();
+
         this.dragButton.events.onDragUpdate.add(this.moveBoard_mobile, this);
     },
     initControls_desktop: function(){
@@ -79,10 +82,10 @@ Breakout.GameState = {
     },
     initBricks: function(){
         var brick_width = 12.5;
-        var brick_height = 0;
+        var brick_height = 64;
 
         this.bricksGroup = this.game.add.group();
-        for(var i = 0; i < 50 * 10; i++){
+        for(var i = 0; i < 1 * 10; i++){
             var randomNumber = Math.floor(Math.random()*(this.bricksData.bricks.length));
             var brickData = this.bricksData.bricks[randomNumber];
             var brick = new Breakout.Brick(this.game, brick_width, brick_height, this.SPRITESHEET, brickData.name);
@@ -100,6 +103,18 @@ Breakout.GameState = {
         console.log(this.testBrick.width);
         console.log(this.testBrick.height);
         this.bricksGroup.add(this.testBrick); */
+    },
+    initSliderGraphics: function(){
+        /* this.sliderGraphic = this.game.add.graphics();
+        this.sliderGraphic.beginFill(0xFFFFFF);
+        this.sliderGraphic.drawRect(0, this.game.height -  this.game.height/6 + 60, this.game.width, 10);
+        this.sliderGraphic.endFill(); */
+    },
+    initGameText: function(){
+        this.score = 0;
+        var textStyle = { font: "32px Sans Serif", fill: "#FFFFFF", align: "center" };
+        this.text_Score = this.game.add.text(this.game.width/2, 35, 'SCORE: '+ this.score, textStyle);
+        this.text_Score.anchor.setTo(0.5);
     },
     moveBoard_desktop: function(){
         if((this.inputCursorKeys.left.isDown || this.WASD_Keys['left'].isDown) && this.board.x > 0){
@@ -143,7 +158,11 @@ Breakout.GameState = {
         
         if(brick.alpha <= 0.3){
             brick.kill();
+            this.score += 100;
+            console.log(this.bricksGroup);
         }
+        this.score += 10;
+        this.text_Score.text = 'SCORE: '+ this.score;
     },
     stopBoard: function(){
         //console.log('colliding');

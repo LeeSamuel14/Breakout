@@ -23,22 +23,22 @@
             },
             {
                 "name": "dark-green-tile",
-                "difficulty": 5,
+                "difficulty": 1,
                 "broken": "dark-green-tile-broken"
             },
             {
                 "name": "orange-tile",
-                "difficulty": 6,
+                "difficulty": 2,
                 "broken": "orange-tile-broken"
             },
             {
                 "name": "purple-tile",
-                "difficulty": 7,
+                "difficulty": 3,
                 "broken": "purple-tile-broken"
             },
             {
                 "name": "red-tile",
-                "difficulty": 8,
+                "difficulty": 4,
                 "broken": "red-tile-broken"
             }
         ]
