@@ -2,6 +2,7 @@ var Breakout = Breakout || {};
 
 Breakout.GameState = {
     init: function(currentLevel){
+        this.game.stage.backgroundColor = '#000000';
         this.game.physics.startSystem(Phaser.Physics.Arcade);
         this.gameTimer = this.game.time.create(false);
         this.gameTimer.start();
@@ -14,6 +15,7 @@ Breakout.GameState = {
         //!Phaser.Device.desktop ? this.initControls_mobile() : this.initControls_desktop();
         this.initBoard();
         this.initBall();
+        this.initBrickValues();
         this.initBricks();
         this.debugMethod();
     },
@@ -68,13 +70,23 @@ Breakout.GameState = {
         this.ball.scale.setTo(this.SPRITESHEET_SCALE);
         this.ballGroup.add(this.ball);
     },
+    initBrickValues: function(){
+        this.bricksData = JSON.parse(this.game.cache.getText('bricks'));
+        console.log(this.bricksData.bricks.length);
+        /* this.brickValues = {};
+        this.brickValues.colours = ['blue-tile'];
+        this.brickValues.diff */
+    },
     initBricks: function(){
         var brick_width = 12.5;
         var brick_height = 0;
 
         this.bricksGroup = this.game.add.group();
-        for(var i = 0; i < 5 * 10; i++){
-            var brick = new Breakout.Brick(this.game, brick_width, brick_height, this.SPRITESHEET, 'blue-tile');
+        for(var i = 0; i < 50 * 10; i++){
+            var randomNumber = Math.floor(Math.random()*(this.bricksData.bricks.length));
+            var brickData = this.bricksData.bricks[randomNumber];
+            var brick = new Breakout.Brick(this.game, brick_width, brick_height, this.SPRITESHEET, brickData.name);
+            brick.brickData = brickData;
             brick.scale.setTo(this.SPRITESHEET_SCALE);
             this.bricksGroup.add(brick);
             brick_width += 96;
@@ -123,8 +135,13 @@ Breakout.GameState = {
        // console.log(this.board.body.checkCollision);//.dispatch(this.stopBoard, this);
     },
     ballTouchBrick: function(ball, brick){
-        brick.alpha -= 0.5;
-        if(brick.alpha <= 0){
+        if(brick.alpha === 1){
+            brick.loadTexture(this.SPRITESHEET, brick.brickData.broken);
+            console.log("X");
+        }
+        brick.alpha -= 1/brick.brickData.difficulty;
+        
+        if(brick.alpha <= 0.3){
             brick.kill();
         }
     },

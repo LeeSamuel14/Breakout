@@ -1,0 +1,45 @@
+{
+    "bricks": 
+        [
+            {
+                "name": "light-blue-tile",
+                "difficulty": 1,
+                "broken": "light-blue-tile-broken"
+            },
+            {
+                "name": "blue-tile",
+                "difficulty": 2,
+                "broken": "blue-tile-broken"
+            },
+            {
+                "name": "yellow-tile",
+                "difficulty": 3,
+                "broken": "yellow-tile-broken"
+            },
+            {
+                "name": "green-tile",
+                "difficulty": 4,
+                "broken": "green-tile-broken"
+            },
+            {
+                "name": "dark-green-tile",
+                "difficulty": 5,
+                "broken": "dark-green-tile-broken"
+            },
+            {
+                "name": "orange-tile",
+                "difficulty": 6,
+                "broken": "orange-tile-broken"
+            },
+            {
+                "name": "purple-tile",
+                "difficulty": 7,
+                "broken": "purple-tile-broken"
+            },
+            {
+                "name": "red-tile",
+                "difficulty": 8,
+                "broken": "red-tile-broken"
+            }
+        ]
+}
