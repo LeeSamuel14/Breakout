@@ -3,7 +3,7 @@ var Breakout = Breakout || {};
 Breakout.Ball = function(game, x, y, key, frame){
     Phaser.Sprite.call(this, game, x, y, key, frame);
     this.game.physics.enable(this);
-    this.body.velocity.setTo(500,500);
+    this.body.velocity.setTo(1000,1000);
     this.body.collideWorldBounds = true;
     this.body.bounce.setTo(1,1);
     this.body.immovable = false;
