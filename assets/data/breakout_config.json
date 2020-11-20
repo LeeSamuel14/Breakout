@@ -41,5 +41,41 @@
                 "difficulty": 4,
                 "broken": "red-tile-broken"
             }
-        ]
+        ],
+    "abilities":
+    [
+       {
+        "name": "board-shrink"
+       },
+       {
+        "name": "board-grow"
+       },
+       {
+        "name": "board-fire"
+       },
+       {
+        "name": "board-many-balls"
+       },
+       {
+        "name": "board-slow"
+       },
+       {
+        "name": "board-fast"
+       },
+       {
+        "name": "board-laser"
+       },
+       {
+        "name": "board-50"
+       },
+       {
+        "name": "board-100"
+       },
+       {
+        "name": "board-250"
+       },
+       {
+        "name": "board-500"
+       }
+    ]
 }

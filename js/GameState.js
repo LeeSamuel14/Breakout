@@ -21,13 +21,18 @@ Breakout.GameState = {
         this.initBricks();
         this.initGameText();
         this.initLives();
+        this.initAbilities();
         this.debugMethod();
     },
     update: function(){
         this.moveBoard_desktop();
         this.game.physics.arcade.collide(this.board, this.ball, this.ballTouchBoard, null, this);
         this.game.physics.arcade.collide(this.bricksGroup, this.ball, this.ballTouchBrick, null, this);
+        this.game.physics.arcade.overlap(this.board, this.abilitiesGroup, this.pickUpAbility, null, this);
         this.checkWinOrLose();
+        if(this.abilityActive){
+            this.text_Ability.text = 'Power:'+ Math.floor(this.time.events.duration/1000) + 's';
+        }
     },
     initConstValues: function(){
         this.BOARD_SPEED = 10;
@@ -42,7 +47,8 @@ Breakout.GameState = {
         this.SPRITESHEET_SCALE = 0.15;
         this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
         this.BRICKS_PER_LINE = 8;
-        this.PLAYER_LIVES = 3;
+        this.PLAYER_LIVES = 300;
+        this.GENERATE_ABILITY_TIME = 15000;
     },
     initControls_mobile: function(){
         this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'slider');
@@ -61,7 +67,7 @@ Breakout.GameState = {
     initBoard: function(){
         this.boardGroup = this.game.add.group();
         this.board = new Breakout.Board(this.game, this.BOARD_X, this.BOARD_Y,this.SPRITESHEET ,'board');
-        this.board.scale.setTo(this.SPRITESHEET_SCALE * this.SPRITESHEET_SCALE_UP_BOARD);
+        this.board.scale.setTo(0.25, 0.2);
         this.boardGroup.add(this.board);
     },
     initBall: function(){
@@ -71,7 +77,7 @@ Breakout.GameState = {
         this.ballGroup.add(this.ball);
     },
     initBrickValues: function(){
-        this.bricksData = JSON.parse(this.game.cache.getText('bricks'));
+        this.breakoutConfig = JSON.parse(this.game.cache.getText('breakout_config'));
         this.bricksDestroyed = 0;
     },
     initBricks: function(){
@@ -82,8 +88,8 @@ Breakout.GameState = {
 
         this.bricksGroup = this.game.add.group();
         for(var i = 0; i < this.currentLevel * this.BRICKS_PER_LINE; i++){ //this.currentLevel * 6 //bricks per level
-            var randomNumber = Math.floor(Math.random()*(this.bricksData.bricks.length));
-            var brickData = this.bricksData.bricks[randomNumber];
+            var randomNumber = Math.floor(Math.random()*(this.breakoutConfig.bricks.length));
+            var brickData = this.breakoutConfig.bricks[randomNumber];
             var brick = new Breakout.Brick(this.game, brick_width, brick_height, this.SPRITESHEET, brickData.name);
             brick.brickData = brickData;
             brick.scale.setTo(this.SPRITESHEET_SCALE);
@@ -100,12 +106,21 @@ Breakout.GameState = {
         this.text_Score = this.game.add.text(10, 10, 'SCORE: '+ this.score, textStyle);
         this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL: '+ this.currentLevel, textStyle);
         this.text_PlayerLives = this.game.add.text(40, this.game.height - 60, ' ', textStyle);
+        this.text_Ability = this.game.add.text(this.game.width/2, 30, 'Power: s', textStyle);
+        this.text_Ability.anchor.setTo(0.5);
+        //this.text_Ability.visible = false;
     },
     initLives: function(){
         this.playerLives = this.PLAYER_LIVES;
-        this.ballLivesSprite = this.game.add.sprite(10, this.game.height -50, this.SPRITESHEET, 'ball');
+        this.ballLivesSprite = this.game.add.sprite(10, this.game.height -50, this.SPRITESHEET, 'heart');
         this.ballLivesSprite.scale.setTo(this.SPRITESHEET_SCALE);
         this.text_PlayerLives.text = this.playerLives;
+    },
+    initAbilities: function(){
+        this.abilityActive = false;
+        this.abilitiesGroup = this.game.add.group();
+        this.game.time.events.loop(this.GENERATE_ABILITY_TIME, this.generateAbility ,this);
+        this.abilities = this.breakoutConfig.abilities;
     },
     moveBoard_desktop: function(){
         if((this.inputCursorKeys.left.isDown || this.WASD_Keys['left'].isDown) && this.board.x > 0){
@@ -175,6 +190,56 @@ Breakout.GameState = {
         this.stateObject.gameScore = this.score;
         //set high score in winlose state
         this.stateObject.isLoss = isLoss;
+    },
+    generateAbility: function(){
+        var randomPosition = 1;//Math.floor(Math.random()*(this.abilities.length));
+        var randomNumber = Math.floor(Math.random()*(this.game.width - 100));
+        var abilitySpriteName = this.abilities[randomPosition].name;
+        var ability = new Breakout.Ability(this.game, randomNumber, 0, this.SPRITESHEET, abilitySpriteName);
+        ability.scale.setTo(0.2);
+        this.abilitiesGroup.add(ability);
+        //console.log(this.abilitiesGroup.children);
+        //delete when out of view please #lee
+    },
+    pickUpAbility: function(board, ability){
+        this.abilityActive = true;
+        this.text_Ability.visible = true;
+        switch(ability.name){
+            case "board-shrink":
+                break;
+            case "board-grow":
+                this.board.scale.setTo(0.4, 0.2);
+                break;
+            case "board-fire":
+                break;
+            case "board-many-balls":
+                break;
+            case "board-slow":
+                break;
+            case "board-fast":
+                break;
+            case "board-laser":
+                break;
+            case "board-50":
+                this.text_Ability.visible = false;
+                break;
+            case "board-100":
+                this.text_Ability.visible = false;
+                break;
+            case "board-250":
+                this.text_Ability.visible = false;
+                break;  
+            case "board-500":
+                this.text_Ability.visible = false;
+                break;
+        }
+        this.game.time.events.add(10000, this.resetToBaseGame, this);
+        ability.kill();
+    },
+    resetToBaseGame: function(){
+        this.abilityActive = false;
+        this.text_Ability.visible = false;
+        this.board.scale.setTo(0.25, 0.2);
     },
     debugMethod: function(){
     }
