@@ -31,7 +31,7 @@ Breakout.GameState = {
         this.game.physics.arcade.overlap(this.board, this.abilitiesGroup, this.pickUpAbility, null, this);
         this.checkWinOrLose();
         if(this.abilityActive){
-            this.text_Ability.text = 'Power:'+ Math.floor(this.time.events.duration/1000) + 's';
+            this.text_Ability.text = 'Power: '+ Math.floor(this.abilityTimer.duration/1000) + 's';
         }
     },
     initConstValues: function(){
@@ -75,6 +75,7 @@ Breakout.GameState = {
         this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, this.SPRITESHEET, 'ball');
         this.ball.scale.setTo(this.SPRITESHEET_SCALE);
         this.ballGroup.add(this.ball);
+        //#lee ball srating off as you play
     },
     initBrickValues: function(){
         this.breakoutConfig = JSON.parse(this.game.cache.getText('breakout_config'));
@@ -117,6 +118,7 @@ Breakout.GameState = {
         this.text_PlayerLives.text = this.playerLives;
     },
     initAbilities: function(){
+        this.abilityTimer = this.game.time.create(false);
         this.abilityActive = false;
         this.abilitiesGroup = this.game.add.group();
         this.game.time.events.loop(this.GENERATE_ABILITY_TIME, this.generateAbility ,this);
@@ -170,11 +172,9 @@ Breakout.GameState = {
                 this.state.start('WinLoseState', true, false, this.stateObject);
                }
                else{
-                   this.ball.reset(100, 100);
-                   //pause game ready pop up
-                   this.ball.body.velocity.setTo(500,500);
-                   this.playerLives--;
-                   this.text_PlayerLives.text = this.playerLives;
+                    this.resetBall();
+                    this.playerLives--;
+                    this.text_PlayerLives.text = this.playerLives;
                }
                 
             }
@@ -233,13 +233,21 @@ Breakout.GameState = {
                 this.text_Ability.visible = false;
                 break;
         }
-        this.game.time.events.add(10000, this.resetToBaseGame, this);
+        this.abilityTimer.start();
+        this.abilityTimer.add(10000, this.resetToBaseGame, this, null);
         ability.kill();
     },
     resetToBaseGame: function(){
         this.abilityActive = false;
         this.text_Ability.visible = false;
         this.board.scale.setTo(0.25, 0.2);
+        this.abilityTimer.stop();
+    },
+    resetBall: function(){
+        this.ball.reset(this.game.width/2, this.game.height/4);
+                   this.game.time.events.add(2000, function(){ 
+                       this.ball.body.velocity.setTo(500,500);
+                    }, this);
     },
     debugMethod: function(){
     }
