@@ -48,7 +48,7 @@ Breakout.GameState = {
         this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
         this.BRICKS_PER_LINE = 8;
         this.PLAYER_LIVES = 300;
-        this.GENERATE_ABILITY_TIME = 15000;
+        this.GENERATE_ABILITY_TIME = 1000;
     },
     initControls_mobile: function(){
         this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'slider');
@@ -192,7 +192,7 @@ Breakout.GameState = {
         this.stateObject.isLoss = isLoss;
     },
     generateAbility: function(){
-        var randomPosition = 1;//Math.floor(Math.random()*(this.abilities.length));
+        var randomPosition = 10;//Math.floor(Math.random()*(this.abilities.length));
         var randomNumber = Math.floor(Math.random()*(this.game.width - 100));
         var abilitySpriteName = this.abilities[randomPosition].name;
         var ability = new Breakout.Ability(this.game, randomNumber, 0, this.SPRITESHEET, abilitySpriteName);
@@ -221,18 +221,23 @@ Breakout.GameState = {
             case "board-laser":
                 break;
             case "board-50":
+                this.score += 50;
                 this.text_Ability.visible = false;
                 break;
             case "board-100":
+                this.score += 100;
                 this.text_Ability.visible = false;
                 break;
             case "board-250":
+                this.score += 250;
                 this.text_Ability.visible = false;
                 break;  
             case "board-500":
+                this.score += 500;
                 this.text_Ability.visible = false;
                 break;
         }
+        this.text_Score.text = 'SCORE: '+ this.score;
         this.abilityTimer.start();
         this.abilityTimer.add(10000, this.resetToBaseGame, this, null);
         ability.kill();
