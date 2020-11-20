@@ -20,6 +20,7 @@ Breakout.GameState = {
         this.initBrickValues();
         this.initBricks();
         this.initGameText();
+        this.initLives();
         this.debugMethod();
     },
     update: function(){
@@ -41,6 +42,7 @@ Breakout.GameState = {
         this.SPRITESHEET_SCALE = 0.15;
         this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
         this.BRICKS_PER_LINE = 8;
+        this.PLAYER_LIVES = 3;
     },
     initControls_mobile: function(){
         this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'slider');
@@ -96,9 +98,14 @@ Breakout.GameState = {
     initGameText: function(){
         var textStyle = { font: "32px Sans Serif", fill: "#FFFFFF", align: "center" };
         this.text_Score = this.game.add.text(10, 10, 'SCORE: '+ this.score, textStyle);
-        //this.text_Score.anchor.setTo(0.5);
         this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL: '+ this.currentLevel, textStyle);
-        //this.text_Level.anchor.setTo(0.5);
+        this.text_PlayerLives = this.game.add.text(40, this.game.height - 60, ' ', textStyle);
+    },
+    initLives: function(){
+        this.playerLives = this.PLAYER_LIVES;
+        this.ballLivesSprite = this.game.add.sprite(10, this.game.height -50, this.SPRITESHEET, 'ball');
+        this.ballLivesSprite.scale.setTo(this.SPRITESHEET_SCALE);
+        this.text_PlayerLives.text = this.playerLives;
     },
     moveBoard_desktop: function(){
         if((this.inputCursorKeys.left.isDown || this.WASD_Keys['left'].isDown) && this.board.x > 0){
@@ -141,10 +148,20 @@ Breakout.GameState = {
     checkWinOrLose: function(){
         if(this.ball && this.board){
             if(this.ball.y > this.board.y + 80){
-               this.ball.kill();
                //put message box to let person know they failed\
+               if(this.playerLives <= 0){
+                this.ball.kill();
                 this.setStateObjectValues(true);
-               this.state.start('WinLoseState', true, false, this.stateObject);
+                this.state.start('WinLoseState', true, false, this.stateObject);
+               }
+               else{
+                   this.ball.reset(100, 100);
+                   //pause game ready pop up
+                   this.ball.body.velocity.setTo(500,500);
+                   this.playerLives--;
+                   this.text_PlayerLives.text = this.playerLives;
+               }
+                
             }
         }
         if(this.bricksDestroyed >= (this.currentLevel * this.BRICKS_PER_LINE) ){
