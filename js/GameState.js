@@ -1,12 +1,14 @@
 var Breakout = Breakout || {};
 
 Breakout.GameState = {
-    init: function(currentLevel){
+    init: function(stateObject){
         this.game.stage.backgroundColor = '#000000';
         this.game.physics.startSystem(Phaser.Physics.Arcade);
         this.gameTimer = this.game.time.create(false);
         this.gameTimer.start();
-        this.currentLevel = currentLevel; 
+        this.stateObject = stateObject;
+        this.currentLevel = this.stateObject.currentLevel; 
+        this.score = this.stateObject.gameScore;
     },
     create: function(){
         this.initConstValues();
@@ -73,6 +75,8 @@ Breakout.GameState = {
     initBricks: function(){
         var brick_width = 12.5;
         var brick_height = 64;
+        /* var brick_width = 12.5;
+        var brick_height = 64; */
 
         this.bricksGroup = this.game.add.group();
         for(var i = 0; i < this.currentLevel * this.BRICKS_PER_LINE; i++){ //this.currentLevel * 6 //bricks per level
@@ -90,10 +94,11 @@ Breakout.GameState = {
         }
     },
     initGameText: function(){
-        this.score = 0;
         var textStyle = { font: "32px Sans Serif", fill: "#FFFFFF", align: "center" };
-        this.text_Score = this.game.add.text(this.game.width/2, 35, 'SCORE: '+ this.score, textStyle);
-        this.text_Score.anchor.setTo(0.5);
+        this.text_Score = this.game.add.text(10, 10, 'SCORE: '+ this.score, textStyle);
+        //this.text_Score.anchor.setTo(0.5);
+        this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL: '+ this.currentLevel, textStyle);
+        //this.text_Level.anchor.setTo(0.5);
     },
     moveBoard_desktop: function(){
         if((this.inputCursorKeys.left.isDown || this.WASD_Keys['left'].isDown) && this.board.x > 0){
@@ -136,13 +141,23 @@ Breakout.GameState = {
     checkWinOrLose: function(){
         if(this.ball && this.board){
             if(this.ball.y > this.board.y + 80){
-               //this.ball.kill();
-               //this.state.start('WinLoseState', true, false, 1);
+               this.ball.kill();
+               //put message box to let person know they failed\
+                this.setStateObjectValues(true);
+               this.state.start('WinLoseState', true, false, this.stateObject);
             }
         }
         if(this.bricksDestroyed >= (this.currentLevel * this.BRICKS_PER_LINE) ){
-            this.state.start('WinLoseState', true, false, ++this.currentLevel);
+            ++this.currentLevel;
+            this.setStateObjectValues(false)
+            this.state.start('WinLoseState', true, false, this.stateObject);
         }
+    },
+    setStateObjectValues: function(isLoss){
+        this.stateObject.currentLevel = this.currentLevel;
+        this.stateObject.gameScore = this.score;
+        //set high score in winlose state
+        this.stateObject.isLoss = isLoss;
     },
     debugMethod: function(){
     }
