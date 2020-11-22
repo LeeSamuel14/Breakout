@@ -26,29 +26,33 @@ Breakout.GameState = {
     },
     update: function(){
         this.moveBoard_desktop();
-        this.game.physics.arcade.collide(this.board, this.ball, this.ballTouchBoard, null, this);
-        this.game.physics.arcade.collide(this.bricksGroup, this.ball, this.ballTouchBrick, null, this);
+        this.game.physics.arcade.collide(this.board, this.ballGroup, this.ballTouchBoard, null, this);
+        this.game.physics.arcade.overlap(this.board, this.ballGroup, this.ballOverlapBoard, null, this);
+        this.game.physics.arcade.collide(this.bricksGroup, this.ballGroup, this.ballTouchBrick, null, this);
         this.game.physics.arcade.overlap(this.board, this.abilitiesGroup, this.pickUpAbility, null, this);
-        this.checkWinOrLose();
+        this.ballGroup.iterate('name', 'ball',0, this.checkWinOrLose, this, ['test']);
+        //this.checkWinOrLose();
         if(this.abilityActive){
             this.text_Ability.text = 'Power: '+ Math.floor(this.abilityTimer.duration/1000) + 's';
         }
     },
     initConstValues: function(){
+        this.BOARD_X = this.game.width/2;
+        this.BOARD_Y = this.game.height - this.game.height/5;
         this.BOARD_SPEED = 10;
-        this.BALL_SPEED  = 10;
         this.DRAG_BUTTON_X = this.game.width/2;
         this.DRAG_BUTTON_Y = this.game.height -  this.game.height/9;
         this.BALL_X = 300;
         this.BALL_Y = 300;
-        this.BOARD_X = this.game.width/2;
-        this.BOARD_Y = this.game.height - this.game.height/5;
+        this.BALL_VELOCITY = 250;//different levels in game have different speeds #lee
+        //can pass as a parameter in here
         this.SPRITESHEET = 'spritesheet_breakout';
         this.SPRITESHEET_SCALE = 0.15;
         this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
         this.BRICKS_PER_LINE = 8;
         this.PLAYER_LIVES = 300;
         this.GENERATE_ABILITY_TIME = 1000;
+
     },
     initControls_mobile: function(){
         this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'slider');
@@ -72,7 +76,7 @@ Breakout.GameState = {
     },
     initBall: function(){
         this.ballGroup = this.game.add.group();
-        this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, this.SPRITESHEET, 'ball');
+        this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, this.SPRITESHEET, 'ball', this.BALL_VELOCITY);
         this.ball.scale.setTo(this.SPRITESHEET_SCALE);
         this.ballGroup.add(this.ball);
         //#lee ball srating off as you play
@@ -146,7 +150,10 @@ Breakout.GameState = {
         
     },
     ballTouchBoard: function(){},
-    ballTouchBrick: function(ball, brick){
+    ballOverlapBoard: function(board, ball){
+        ball.body.velocity.setTo(this.BALL_VELOCITY, -this.BALL_VELOCITY);
+    },
+    ballTouchBrick: function(brick, ball){
         if(brick.alpha === 1){
             brick.loadTexture(this.SPRITESHEET, brick.brickData.broken);
         }
@@ -163,17 +170,24 @@ Breakout.GameState = {
         this.text_Score.text = 'SCORE: '+ this.score;
     },
     checkWinOrLose: function(){
-        if(this.ball && this.board){
-            if(this.ball.y > this.board.y + 80){
+        //#ballgroup
+        if(arguments[0] && this.board){
+            if(arguments[0].y > this.board.y + 80){
                //put message box to let person know they failed\
                if(this.playerLives <= 0){
-                this.ball.kill();
+                arguments[0].kill();
                 this.setStateObjectValues(true);
                 this.state.start('WinLoseState', true, false, this.stateObject);
                }
                else{
-                    this.resetBall();
+                   if(this.ballGroup.length > 1){
+                    arguments[0].kill();
+                    this.ballGroup.remove(arguments[0]);
+                   }
+                   else{
+                    this.resetBall(arguments[0]);
                     this.playerLives--;
+                   }
                     this.text_PlayerLives.text = this.playerLives;
                }
                 
@@ -192,13 +206,12 @@ Breakout.GameState = {
         this.stateObject.isLoss = isLoss;
     },
     generateAbility: function(){
-        var randomPosition = 10;//Math.floor(Math.random()*(this.abilities.length));
+        var randomPosition = 3;//Math.floor(Math.random()*(this.abilities.length));
         var randomNumber = Math.floor(Math.random()*(this.game.width - 100));
         var abilitySpriteName = this.abilities[randomPosition].name;
         var ability = new Breakout.Ability(this.game, randomNumber, 0, this.SPRITESHEET, abilitySpriteName);
         ability.scale.setTo(0.2);
         this.abilitiesGroup.add(ability);
-        //console.log(this.abilitiesGroup.children);
         //delete when out of view please #lee
     },
     pickUpAbility: function(board, ability){
@@ -206,6 +219,7 @@ Breakout.GameState = {
         this.text_Ability.visible = true;
         switch(ability.name){
             case "board-shrink":
+                this.board.scale.setTo(0.17, 0.2);
                 break;
             case "board-grow":
                 this.board.scale.setTo(0.4, 0.2);
@@ -213,10 +227,20 @@ Breakout.GameState = {
             case "board-fire":
                 break;
             case "board-many-balls":
+                for(var i = 1; i < 3; i++){
+                    this.newBall = new Breakout.Ball(this.game, i*100, i*200, this.SPRITESHEET, 'ball', this.BALL_VELOCITY);
+                    this.newBall.scale.setTo(this.SPRITESHEET_SCALE);
+                    this.ballGroup.add(this.newBall);
+                }
                 break;
             case "board-slow":
+                //#ballgroup
+                this.ball.body.velocity.setTo(this.BALL_VELOCITY / 1.75, -this.BALL_VELOCITY / 1.75);
                 break;
             case "board-fast":
+                //#ballgroup
+                //this.BALL_VELOCITY *= 1.75;
+                this.ball.body.velocity.setTo(this.BALL_VELOCITY * 1.75, -this.BALL_VELOCITY * 1.75);
                 break;
             case "board-laser":
                 break;
@@ -246,14 +270,23 @@ Breakout.GameState = {
         this.abilityActive = false;
         this.text_Ability.visible = false;
         this.board.scale.setTo(0.25, 0.2);
+        //this.BALL_VELOCITY /= 1.75;
+        //#ballgroup
+        this.ball.body.velocity.setTo(this.BALL_VELOCITY, this.BALL_VELOCITY);
         this.abilityTimer.stop();
     },
-    resetBall: function(){
-        this.ball.reset(this.game.width/2, this.game.height/4);
+    resetBall: function(ball){
+        //#ballgroup
+        ball.reset(this.game.width/2, this.game.height/4);
                    this.game.time.events.add(2000, function(){ 
-                       this.ball.body.velocity.setTo(500,500);
+                       //#ballgroup
+                    ball.body.velocity.setTo(this.BALL_VELOCITY, this.BALL_VELOCITY);
                     }, this);
     },
     debugMethod: function(){
+    }, 
+    testIterate: function(){
+        console.log('1');
+        console.log(arguments);
     }
 };
