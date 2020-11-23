@@ -34,7 +34,7 @@ Breakout.GameState = {
         this.ballGroup.iterate('name', 'ball',0, this.checkWinOrLose, this);
         //this.checkWinOrLose();
         if(this.abilityActive){
-            this.text_Ability.text = 'Power: '+ Math.floor(this.abilityTimer.duration/1000) + 's';
+            this.text_Ability.text = Math.floor(this.abilityTimer.duration/1000) + 's';
         }
     },
     initConstValues: function(){
@@ -109,13 +109,13 @@ Breakout.GameState = {
         }
     },
     initGameText: function(){
-        var textStyle = { font: "32px Sans Serif", fill: "#FFFFFF", align: "center" };
-        this.text_Score = this.game.add.text(10, 10, 'SCORE: '+ this.score, textStyle);
-        this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL: '+ this.currentLevel, textStyle);
+        var textStyle = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
+        this.text_Score = this.game.add.text(10, 10, 'SCORE '+ this.score, textStyle);
+        this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL '+ this.currentLevel, textStyle);
         this.text_PlayerLives = this.game.add.text(40, this.game.height - 60, ' ', textStyle);
-        this.text_Ability = this.game.add.text(this.game.width/2, 30, 'Power: s', textStyle);
+        this.text_Ability = this.game.add.text(this.game.width/2, 30, 'Power s', textStyle);
         this.text_Ability.anchor.setTo(0.5);
-        //this.text_Ability.visible = false;
+        this.text_Ability.visible = false;
     },
     initLives: function(){
         this.playerLives = this.PLAYER_LIVES;

@@ -24,7 +24,7 @@ Breakout.WinLoseState = {
     
     initGameText: function(){
         
-        var textStyle = { font: "32px Sans Serif", fill: "#FFFFFF", align: "center" };
+        var textStyle = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
         this.text_Score = this.game.add.text(10, 10, 'TOTAL GAME SCORE: '+ this.stateObject.gameScore, textStyle);
         this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL: '+ this.stateObject.currentLevel, textStyle);
         this.text_HighScore = this.game.add.text(0, 400, 'HIGH SCORE: '+ this.stateObject.highScore, textStyle);
