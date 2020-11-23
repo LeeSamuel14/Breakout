@@ -45,7 +45,7 @@ Breakout.GameState = {
         this.DRAG_BUTTON_Y = this.game.height -  this.game.height/9;
         this.BALL_X = 300;
         this.BALL_Y = 300;
-        this.BALL_VELOCITY = 300;//different levels in game have different speeds #lee
+        this.BALL_VELOCITY = 600;//different levels in game have different speeds #lee
         //can pass as a parameter in here
         this.SPRITESHEET = 'spritesheet_breakout';
         this.SPRITESHEET_SCALE = 0.15;
