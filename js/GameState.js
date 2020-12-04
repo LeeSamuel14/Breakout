@@ -51,7 +51,7 @@ Breakout.GameState = {
         this.SPRITESHEET_SCALE = 0.15;
         this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
         this.BRICKS_PER_LINE = 8;
-        this.PLAYER_LIVES = 3;
+        this.PLAYER_LIVES = 30;
         this.GENERATE_ABILITY_TIME = 15000;
         this.ABILITY_LIFESPAN = 10000;
 
