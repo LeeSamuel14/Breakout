@@ -12,6 +12,7 @@ Breakout.GameState = {
     },
     create: function(){
         this.initConstValues();
+        this.initGameBoarder();
         this.initControls_mobile();
         this.initControls_desktop();
         //!Phaser.Device.desktop ? this.initControls_mobile() : this.initControls_desktop();
@@ -69,6 +70,27 @@ Breakout.GameState = {
             'left': Phaser.KeyCode.A, 
             'right': Phaser.KeyCode.D 
             }); 
+    },
+    initGameBoarder: function(){
+        this.line_TOP = this.game.add.graphics();
+        this.line_TOP.beginFill(0x33CCFF);
+        this.line_TOP.drawRect(0, 0, this.game.width, 5);
+        this.line_TOP.endFill();
+
+        this.line_RIGHT = this.game.add.graphics();
+        this.line_RIGHT.beginFill(0x33CCFF);
+        this.line_RIGHT.drawRect(this.game.width - 5, 0, 5, this.game.height);
+        this.line_RIGHT.endFill();
+
+        this.line_BOTTOM = this.game.add.graphics();
+        this.line_BOTTOM.beginFill(0x33CCFF);
+        this.line_BOTTOM.drawRect(0, this.game.height - 5, this.game.width, 5);
+        this.line_BOTTOM.endFill();
+
+        this.line_LEFT = this.game.add.graphics();
+        this.line_LEFT.beginFill(0x33CCFF);
+        this.line_LEFT.drawRect(0, 0, 5, this.game.height);
+        this.line_LEFT.endFill();
     },
     initBoard: function(){
         this.boardGroup = this.game.add.group();
