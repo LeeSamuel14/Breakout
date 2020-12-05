@@ -11,6 +11,7 @@ Breakout.GameState = {
         this.score = this.stateObject.gameScore;
     },
     create: function(){
+        this.initDifficultySpeed();
         this.initConstValues();
         this.initGameBoarder();
         this.initControls_mobile();
@@ -33,9 +34,27 @@ Breakout.GameState = {
         this.game.physics.arcade.collide(this.bricksGroup, this.laserGroup, this.ballTouchBrick, null, this);
         this.game.physics.arcade.overlap(this.board, this.abilitiesGroup, this.pickUpAbility, null, this);
         this.ballGroup.iterate('name', 'ball',0, this.checkWinOrLose, this);
-        //this.checkWinOrLose();
         if(this.abilityActive){
             this.text_Ability.text = Math.floor(this.abilityTimer.duration/1000) + 's';
+        }
+    },
+    initDifficultySpeed: function(){
+        this.difficultySpeed = 0;
+        if(this.stateObject.difficulty){
+            switch(this.stateObject.difficulty){
+                case 'Easy':
+                    this.difficultySpeed = 500;
+                    break;
+                case 'Medium':
+                    this.difficultySpeed = 750;
+                    break;
+                case 'Hard':
+                    this.difficultySpeed = 1000;
+                    break; 
+                default:
+                    this.difficultySpeed = 500;
+                    break;
+            }
         }
     },
     initConstValues: function(){
@@ -44,16 +63,15 @@ Breakout.GameState = {
         this.BOARD_SPEED = 10;
         this.DRAG_BUTTON_X = this.game.width/2;
         this.DRAG_BUTTON_Y = this.game.height -  this.game.height/9;
-        this.BALL_X = 300;
-        this.BALL_Y = 300;
-        this.BALL_VELOCITY = 800;//different levels in game have different speeds #lee
-        //can pass as a parameter in here
+        this.BALL_X = this.BOARD_X;
+        this.BALL_Y = this.BOARD_Y - 50;
+        this.BALL_VELOCITY = this.difficultySpeed;
         this.SPRITESHEET = 'spritesheet_breakout';
         this.SPRITESHEET_SCALE = 0.15;
         this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
         this.BRICKS_PER_LINE = 8;
         this.PLAYER_LIVES = 3;
-        this.GENERATE_ABILITY_TIME = 15000;
+        this.GENERATE_ABILITY_TIME = 12000;
         this.ABILITY_LIFESPAN = 10000;
 
     },
@@ -103,7 +121,7 @@ Breakout.GameState = {
         this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, this.SPRITESHEET, 'ball', this.BALL_VELOCITY);
         this.ball.scale.setTo(this.SPRITESHEET_SCALE);
         this.ballGroup.add(this.ball);
-        //#lee ball srating off as you play
+        //#lee ball srating off as you play look at phaser pause and pop ups in Phaser
     },
     initBrickValues: function(){
         this.breakoutConfig = JSON.parse(this.game.cache.getText('breakout_config'));
@@ -151,6 +169,7 @@ Breakout.GameState = {
         this.abilitiesGroup = this.game.add.group();
         this.game.time.events.loop(this.GENERATE_ABILITY_TIME, this.generateAbility ,this);
         this.abilities = this.breakoutConfig.abilities;
+        this.randomSprite = '';
     },
     initLaser: function(){
         this.laserTimer = this.game.time.create(false);
@@ -182,35 +201,19 @@ Breakout.GameState = {
         ball.body.velocity.setTo(this.BALL_VELOCITY, -this.BALL_VELOCITY);
     },
     ballTouchBrick: function(brick, ball){
-        console.log(this.fireBallActive);
         if(brick.alpha === 1){
             brick.loadTexture(this.SPRITESHEET, brick.brickData.broken);
         }
         brick.alpha -= 1/brick.brickData.difficulty;
-        if(this.fireBallActive){
+        if(brick.alpha <= 0.3){
+            this.bricksDestroyed++;
             brick.kill();
-            this.ballGroup.iterate('name', 'ball', 0, function(ball){
-                ball.body.velocity.setTo(this.BALL_VELOCITY, -this.BALL_VELOCITY);
-                if(ball.x <= 20){
-                    ball.body.velocity.setTo(this.BALL_VELOCITY, this.BALL_VELOCITY);
-                }
-            }, this);
+            this.score += 100;
         }
         else{
-            if(brick.alpha <= 0.3){
-                this.bricksDestroyed++;
-                brick.kill();
-                this.score += 100;
-            }
-            else{
-                this.score += 10;
-            }
-        }
-        
-
-        
-
-        if(this.canShootLaser && ball.name === 'laser'){
+            this.score += 10;
+        } 
+        if(ball.name === 'laser'){
             ball.kill();
         } 
         this.text_Score.text = 'SCORE: '+ this.score;
@@ -226,12 +229,12 @@ Breakout.GameState = {
                }
                else{
                    if(this.ballGroup.length > 1){
-                    ball.kill();
+                    ball.kill(); 
                     this.ballGroup.remove(ball);
                    }
                    else{
-                    this.resetBall(ball);
-                    this.playerLives--;
+                    this.resetBall(ball); 
+                    this.playerLives--; 
                    }
                     this.text_PlayerLives.text = this.playerLives;
                }
@@ -251,15 +254,38 @@ Breakout.GameState = {
         this.stateObject.isLoss = isLoss;
     },
     generateAbility: function(){
-        var randomPosition = Math.floor(Math.random()*(this.abilities.length));
+        var abilitySpriteName = this.generateRandomAbility();
         var randomNumber = Math.floor(Math.random()*(this.game.width - 100));
-        var abilitySpriteName = this.abilities[randomPosition].name;
         var ability = new Breakout.Ability(this.game, randomNumber, 0, this.SPRITESHEET, abilitySpriteName);
+        //console.log(abilitySpriteName);
+        //console.log(ability.frame);
         ability.scale.setTo(0.2);
         this.abilitiesGroup.add(ability);
+        this.previousAbility = abilitySpriteName;
         //delete when out of view please #lee
     },
+    generateRandomAbility: function(){
+        var randomPosition = Math.floor(Math.random()*(this.abilities.length)); //#uncomment
+        var abilitySpriteName = this.abilities[randomPosition].name;
+        //console.log(abilitySpriteName);
+        if(this.previousAbility){
+            if(this.previousAbility === abilitySpriteName){
+                this.generateRandomAbility();
+                return this.randomSprite;
+            }
+            else{
+                this.randomSprite = abilitySpriteName;
+                return abilitySpriteName;
+            }
+        }
+        else {
+            this.randomSprite = abilitySpriteName;
+            return abilitySpriteName;
+        }
+    },
     pickUpAbility: function(board, ability){
+        this.abilityName = ability.name;
+        //console.log(this.abilityName);
         this.abilityActive = true;
         this.text_Ability.visible = true;
         switch(ability.name){
@@ -268,9 +294,6 @@ Breakout.GameState = {
                 break;
             case "board-grow":
                 this.board.scale.setTo(0.4, 0.2);
-                break;
-            case "board-fire":
-                this.fireBallActive = true;
                 break;
             case "board-many-balls":
                 for(var i = 1; i < 3; i++){
@@ -281,15 +304,13 @@ Breakout.GameState = {
                 break;
             case "board-slow":
                 this.ballGroup.iterate('name', 'ball', 0, function(ball){
-                    ball.body.velocity.setTo(this.BALL_VELOCITY / 1.75, -this.BALL_VELOCITY / 1.75);
+                    ball.body.velocity.setTo(ball.body.velocity.x / 1.75, ball.body.velocity.y / 1.75);
                 }, this);
-                this.velocityChanged = true;
                 break;
             case "board-fast":
                 this.ballGroup.iterate('name', 'ball', 0, function(ball){
-                    ball.body.velocity.setTo(this.BALL_VELOCITY * 1.75, -this.BALL_VELOCITY * 1.75);
+                    ball.body.velocity.setTo(ball.body.velocity.x * 1.75, ball.body.velocity.y * 1.75);
                 }, this);
-                this.velocityChanged = true;
                 break;
             case "board-laser":
                 this.canShootLaser = true;
@@ -298,18 +319,22 @@ Breakout.GameState = {
                 break;
             case "board-50":
                 this.score += 50;
+                this.abilityActive = false;
                 this.text_Ability.visible = false;
                 break;
             case "board-100":
                 this.score += 100;
+                this.abilityActive = false;
                 this.text_Ability.visible = false;
                 break;
             case "board-250":
                 this.score += 250;
+                this.abilityActive = false;
                 this.text_Ability.visible = false;
                 break;  
             case "board-500":
                 this.score += 500;
+                this.abilityActive = false;
                 this.text_Ability.visible = false;
                 break;
         }
@@ -319,26 +344,50 @@ Breakout.GameState = {
         ability.kill();
     },
     resetToBaseGame: function(){
+        if(this.abilityName){
+            switch(this.abilityName){
+                case "board-shrink":
+                case "board-grow":
+                    this.board.scale.setTo(0.25, 0.2);
+                    break;
+                case "board-many-balls":
+                    break;
+                case "board-slow":
+                    this.ballGroup.iterate('name', 'ball', 0, function(ball){
+                        ball.body.velocity.setTo(ball.body.velocity.x * 1.75, ball.body.velocity.y * 1.75);
+                    }, this);
+                    break;
+                case "board-fast":
+                    this.ballGroup.iterate('name', 'ball', 0, function(ball){
+                        ball.body.velocity.setTo(ball.body.velocity.x / 1.75, ball.body.velocity.y / 1.75);
+                    }, this);
+                    break;
+                case "board-laser":
+                    this.canShootLaser = false;
+                    this.laserTimer.stop();
+                    this.game.time.events.add(2000, function(){ 
+                        this.laserGroup.removeAll(true);
+                        }, this);
+                    break;
+                case "board-50":
+                    break;
+                case "board-100":
+                    break;
+                case "board-250":
+                    break;  
+                case "board-500":
+                    break;
+            }
+        }
         this.abilityActive = false;
         this.text_Ability.visible = false;
-        this.board.scale.setTo(0.25, 0.2);
-        if(this.velocityChanged){
-            this.ballGroup.iterate('name', 'ball', 0, function(ball){
-                ball.body.velocity.setTo(this.BALL_VELOCITY, this.BALL_VELOCITY);
-            }, this);
-        }
-        this.fireBallActive = false;
-        this.canShootLaser = false;
-        this.laserGroup.removeAll(true);
-        this.laserTimer.stop();
         this.abilityTimer.stop();
-        this.velocityChanged = false;
     },
     resetBall: function(ball){
         ball.reset(this.game.width/2, this.game.height/4);
-                   this.game.time.events.add(2000, function(){ 
-                    ball.body.velocity.setTo(this.BALL_VELOCITY, this.BALL_VELOCITY);
-                    }, this);
+        this.game.time.events.add(2000, function(){ 
+        ball.body.velocity.setTo(this.BALL_VELOCITY, this.BALL_VELOCITY);
+        }, this);
     },
     shootLasers: function(){
         if(this.canShootLaser){

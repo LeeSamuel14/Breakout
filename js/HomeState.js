@@ -14,6 +14,7 @@ Breakout.HomeState = {
         this.stateObject.gameScore = 0;
         this.stateObject.highScore = 0;
         this.stateObject.isLoss = false;
+        this.stateObject.difficulty = 'Easy';
         if(localStorage.getItem('highScore')){
             this.stateObject.highScore = parseInt(localStorage.getItem('highScore'));
         }
@@ -25,18 +26,21 @@ Breakout.HomeState = {
         this.button_Easy = this.game.add.button(this.game.width/2, this.game.height/4, 'spritesheet_breakout', null, null,'green-tile', 'green-tile','green-tile','green-tile');
         this.button_Easy.anchor.setTo(0.5);
         this.button_Easy.events.onInputDown.add(function(){
+            this.stateObject.difficulty = 'Easy';
             this.state.start('GameState', true, false, this.stateObject);
           }, this);
 
         this.button_Medium = this.game.add.button(this.game.width/2, this.game.height/2, 'spritesheet_breakout', null, null,'orange-tile', 'orange-tile','orange-tile','orange-tile');
         this.button_Medium.anchor.setTo(0.5);
         this.button_Medium.events.onInputDown.add(function(){
+            this.stateObject.difficulty = 'Medium';
             this.state.start('GameState', true, false, this.stateObject);
           }, this);
 
         this.button_Hard= this.game.add.button(this.game.width/2, this.game.height - this.game.height/4, 'spritesheet_breakout', null, null,'red-tile', 'red-tile','red-tile','red-tile');
         this.button_Hard.anchor.setTo(0.5);
         this.button_Hard.events.onInputDown.add(function(){
+            this.stateObject.difficulty = 'Hard';
             this.state.start('GameState', true, false, this.stateObject);
           }, this);
     },
