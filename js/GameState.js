@@ -73,7 +73,7 @@ Breakout.GameState = {
         this.SPRITESHEET_SCALE = 0.15;
         this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
         this.BRICKS_PER_LINE = 8;
-        this.PLAYER_LIVES = 30;
+        this.PLAYER_LIVES = 3;
         this.GENERATE_ABILITY_TIME = 12000;
         this.ABILITY_LIFESPAN = 10000;
 
@@ -264,6 +264,9 @@ Breakout.GameState = {
         //console.log(abilitySpriteName);
         //console.log(ability.frame);
         ability.scale.setTo(0.2);
+        if(abilitySpriteName === 'heart'){
+            ability.scale.setTo(0.3); 
+        }
         this.abilitiesGroup.add(ability);
         this.previousAbility = abilitySpriteName;
         //delete when out of view please #lee
@@ -341,6 +344,12 @@ Breakout.GameState = {
                 this.abilityActive = false;
                 this.text_Ability.visible = false;
                 break;
+            case "heart":
+                this.playerLives ++;
+                this.text_PlayerLives.text = this.playerLives;
+                this.abilityActive = false;
+                this.text_Ability.visible = false;
+                break;
         }
         this.text_Score.text = 'SCORE: '+ this.score;
         this.abilityTimer.start();
@@ -411,7 +420,7 @@ Breakout.GameState = {
             for(var i = 0; i < 2; i++){
                 var laser = new Breakout.Laser(this.game, laserX , this.board.y - 20 , this.SPRITESHEET ,'laser');
                 laser.scale.setTo(0.5);
-                laser.body.velocity.setTo(0, -300);
+                laser.body.velocity.setTo(0, -600);
                 this.laserGroup.add(laser);
                 laserX += this.board.width - 20;
             }

@@ -73,6 +73,9 @@
        },
        {
         "name": "board-500"
+       },
+       {
+        "name": "heart"
        }
     ]
 }
