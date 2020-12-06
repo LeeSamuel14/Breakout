@@ -397,10 +397,13 @@ Breakout.GameState = {
         this.abilityTimer.stop();
     },
     resetBall: function(ball){
-        ball.reset(this.game.width/2, this.game.height/4);
+        ball.reset(this.BALL_X, this.BALL_Y );
+        this.text_Ability.visible = false;
         this.game.time.events.add(2000, function(){ 
-        ball.body.velocity.setTo(this.BALL_VELOCITY, this.BALL_VELOCITY);
+            ball.body.velocity.setTo(this.BALL_VELOCITY, -this.BALL_VELOCITY);
+            this.resetToBaseGame();
         }, this);
+        
     },
     shootLasers: function(){
         if(this.canShootLaser){
