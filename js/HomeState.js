@@ -16,6 +16,8 @@ Breakout.HomeState = {
         this.stateObject.highScore = 0;
         this.stateObject.isLoss = false;
         this.stateObject.difficulty = 'Easy';
+        this.stateObject.brickHitScore = 10;
+        this.stateObject.brickDieScore = 100;
         if(localStorage.getItem('highScore')){
             this.stateObject.highScore = parseInt(localStorage.getItem('highScore'));
         }
@@ -33,6 +35,8 @@ Breakout.HomeState = {
         this.button_Easy.anchor.setTo(0.5);
         this.button_Easy.events.onInputDown.add(function(){
             this.stateObject.difficulty = 'Easy';
+            this.stateObject.brickHitScore = 10;
+        this.stateObject.brickDieScore = 100;
             this.state.start('GameState', true, false, this.stateObject);
           }, this);
 
@@ -40,6 +44,8 @@ Breakout.HomeState = {
         this.button_Medium.anchor.setTo(0.5);
         this.button_Medium.events.onInputDown.add(function(){
             this.stateObject.difficulty = 'Medium';
+            this.stateObject.brickHitScore = 12;
+            this.stateObject.brickDieScore = 125;
             this.state.start('GameState', true, false, this.stateObject);
           }, this);
 
@@ -47,6 +53,8 @@ Breakout.HomeState = {
         this.button_Hard.anchor.setTo(0.5);
         this.button_Hard.events.onInputDown.add(function(){
             this.stateObject.difficulty = 'Hard';
+            this.stateObject.brickHitScore = 15;
+            this.stateObject.brickDieScore = 150;
             this.state.start('GameState', true, false, this.stateObject);
           }, this);
     },

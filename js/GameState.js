@@ -9,6 +9,8 @@ Breakout.GameState = {
         this.stateObject = stateObject;
         this.currentLevel = this.stateObject.currentLevel; 
         this.score = this.stateObject.gameScore;
+        this.brickHitScore = this.stateObject.brickHitScore;
+        this.brickDieScore = this.stateObject.brickDieScore;
         this.gameStarted = false;
         this.buttonPressed = false;
     },
@@ -16,6 +18,7 @@ Breakout.GameState = {
         this.initDifficultySpeed();
         this.initConstValues();
         this.initGameBoarder();
+        this.initGameLogo();
         this.initControlsGraphics();
         this.initPauseButton();
         this.initControls_mobile();
@@ -118,6 +121,12 @@ Breakout.GameState = {
         this.line_LEFT.drawRect(0, 0, 5, this.game.height);
         this.line_LEFT.endFill();
     },
+    //#lee move ui elements around
+    initGameLogo: function(){
+        var logoSprite = this.game.add.sprite(this.game.width/2, 30, 'logo');
+        logoSprite.anchor.setTo(0.5);
+        logoSprite.scale.setTo(0.6);
+    },
     initControlsGraphics: function(){
         this.controlsLine = this.game.add.graphics();
         this.controlsLine.beginFill(0x33CCFF);
@@ -126,10 +135,10 @@ Breakout.GameState = {
     },
     initPauseButton: function(){
         this.game.input.onDown.add(this.resumeGame, this);
-        this.button_Pause = this.game.add.button(this.game.width- 30, this.game.height - 30, 'pause');//, this.pauseGame, this);
+        this.button_Pause = this.game.add.button(this.game.width - 80, 80, 'pause');//, this.pauseGame, this);
         this.button_Pause.events.onInputUp.add(this.pauseGame, this);
         this.button_Pause.anchor.setTo(0.5);
-        this.button_Pause.scale.setTo(0.04);
+        this.button_Pause.scale.setTo(0.05);
     },
     initBoard: function(){
         this.boardGroup = this.game.add.group();
@@ -150,7 +159,7 @@ Breakout.GameState = {
     },
     initBricks: function(){
         var brick_width = 12.5;
-        var brick_height = 64;
+        var brick_height = 128;
         /* var brick_width = 12.5;
         var brick_height = 64; */
 
@@ -174,8 +183,8 @@ Breakout.GameState = {
         var textStyle_FontLarge = { font: "40px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
         this.text_Score = this.game.add.text(10, 10, 'SCORE '+ this.score, textStyle);
         this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL '+ this.currentLevel, textStyle);
-        this.text_PlayerLives = this.game.add.text(40, this.game.height - 50, ' ', textStyle);
-        this.text_Ability = this.game.add.text(this.game.width/2, 30, 'Power s', textStyle);
+        this.text_PlayerLives = this.game.add.text(40, 70, ' ', textStyle);
+        this.text_Ability = this.game.add.text(this.game.width/2, 90, 'Power s', textStyle);
         this.text_Paused = this.game.add.text(this.game.width/2, this.game.height/2, 'GAME PAUSED', textStyle_FontLarge);
         this.text_Paused.anchor.setTo(0.5);
         this.text_Paused.visible = false;
@@ -184,7 +193,7 @@ Breakout.GameState = {
     },
     initLives: function(){
         this.playerLives = this.PLAYER_LIVES;
-        this.ballLivesSprite = this.game.add.sprite(10, this.game.height -40, this.SPRITESHEET, 'heart');
+        this.ballLivesSprite = this.game.add.sprite(10, 80, this.SPRITESHEET, 'heart');
         this.ballLivesSprite.scale.setTo(this.SPRITESHEET_SCALE);
         this.text_PlayerLives.text = this.playerLives;
     },
@@ -250,10 +259,10 @@ Breakout.GameState = {
         if(brick.alpha <= 0.3){
             this.bricksDestroyed++;
             brick.kill();
-            this.score += 100;
+            this.score += this.brickDieScore;
         }
         else{
-            this.score += 10;
+            this.score += this.brickHitScore;
         } 
         if(ball.name === 'laser'){
             ball.kill();
@@ -346,6 +355,8 @@ Breakout.GameState = {
                     this.newBall.scale.setTo(this.SPRITESHEET_SCALE);
                     this.ballGroup.add(this.newBall);
                 }
+                this.abilityActive = false;
+                this.text_Ability.visible = false;
                 break;
             case "board-slow":
                 this.ballGroup.iterate('name', 'ball', 0, function(ball){
@@ -363,20 +374,8 @@ Breakout.GameState = {
                 this.laserTimer.add(10, this.shootLasers, this, null);
                 break;
             case "board-50":
-                this.score += 50;
-                this.abilityActive = false;
-                this.text_Ability.visible = false;
-                break;
             case "board-100":
-                this.score += 100;
-                this.abilityActive = false;
-                this.text_Ability.visible = false;
-                break;
-            case "board-250":
-                this.score += 250;
-                this.abilityActive = false;
-                this.text_Ability.visible = false;
-                break;  
+            case "board-250":  
             case "board-500":
                 this.score += 500;
                 this.abilityActive = false;
