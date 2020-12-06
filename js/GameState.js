@@ -61,7 +61,7 @@ Breakout.GameState = {
         this.BOARD_X = this.game.width/2;
         this.BOARD_Y = this.game.height - this.game.height/5;
         this.BOARD_SPEED = 10;
-        this.DRAG_BUTTON_X = this.game.width/2;
+        this.DRAG_BUTTON_X = this.game.width/2 - 200;
         this.DRAG_BUTTON_Y = this.game.height -  this.game.height/9;
         this.BALL_X = this.BOARD_X;
         this.BALL_Y = this.BOARD_Y - 50;
@@ -80,7 +80,8 @@ Breakout.GameState = {
     },
     initControls_mobile: function(){
         this.dragButton = this.game.add.button(this.DRAG_BUTTON_X, this.DRAG_BUTTON_Y, 'slider');
-        this.dragButton.scale.setTo(0.25, 0.6);
+        this.dragButton.scale.setTo(2, 1.0);
+        this.dragButton.anchor.setTo(0.25, 0);
         this.dragButton.inputEnabled = true;
         this.dragButton.input.enableDrag();
         this.dragButton.events.onDragUpdate.add(this.moveBoard_mobile, this);
