@@ -66,11 +66,14 @@ Breakout.GameState = {
         this.BALL_X = this.BOARD_X;
         this.BALL_Y = this.BOARD_Y - 50;
         this.BALL_VELOCITY = this.difficultySpeed;
+        this.BALL_VELOCITY_FACTOR = 1.75;
+        this.BALL_VELOCITY_SLOW = this.difficultySpeed / this.BALL_VELOCITY_FACTOR;
+        this.BALL_VELOCITY_FAST = this.difficultySpeed * this.BALL_VELOCITY_FACTOR;
         this.SPRITESHEET = 'spritesheet_breakout';
         this.SPRITESHEET_SCALE = 0.15;
         this.SPRITESHEET_SCALE_UP_BOARD = 1.25;
         this.BRICKS_PER_LINE = 8;
-        this.PLAYER_LIVES = 3;
+        this.PLAYER_LIVES = 30;
         this.GENERATE_ABILITY_TIME = 12000;
         this.ABILITY_LIFESPAN = 10000;
 
@@ -199,6 +202,7 @@ Breakout.GameState = {
     ballTouchBoard: function(){},
     ballOverlapBoard: function(board, ball){
         ball.body.velocity.setTo(this.BALL_VELOCITY, -this.BALL_VELOCITY);
+        console.log('overlapping');
     },
     ballTouchBrick: function(brick, ball){
         if(brick.alpha === 1){
@@ -227,7 +231,7 @@ Breakout.GameState = {
                 this.setStateObjectValues(true);
                 this.state.start('WinLoseState', true, false, this.stateObject);
                }
-               else{
+                else{
                    if(this.ballGroup.length > 1){
                     ball.kill(); 
                     this.ballGroup.remove(ball);
@@ -304,12 +308,12 @@ Breakout.GameState = {
                 break;
             case "board-slow":
                 this.ballGroup.iterate('name', 'ball', 0, function(ball){
-                    ball.body.velocity.setTo(ball.body.velocity.x / 1.75, ball.body.velocity.y / 1.75);
+                    ball.body.velocity.setTo(ball.body.velocity.x / this.BALL_VELOCITY_FACTOR, ball.body.velocity.y / this.BALL_VELOCITY_FACTOR);
                 }, this);
                 break;
             case "board-fast":
                 this.ballGroup.iterate('name', 'ball', 0, function(ball){
-                    ball.body.velocity.setTo(ball.body.velocity.x * 1.75, ball.body.velocity.y * 1.75);
+                    ball.body.velocity.setTo(ball.body.velocity.x * this.BALL_VELOCITY_FACTOR, ball.body.velocity.y * this.BALL_VELOCITY_FACTOR);
                 }, this);
                 break;
             case "board-laser":
@@ -354,12 +358,21 @@ Breakout.GameState = {
                     break;
                 case "board-slow":
                     this.ballGroup.iterate('name', 'ball', 0, function(ball){
-                        ball.body.velocity.setTo(ball.body.velocity.x * 1.75, ball.body.velocity.y * 1.75);
+                        if( Math.abs(ball.body.velocity.x) === this.BALL_VELOCITY_SLOW){
+                            var directionX = (ball.body.velocity.x * this.BALL_VELOCITY_FACTOR ) / this.BALL_VELOCITY;
+                            var directionY = (ball.body.velocity.y * this.BALL_VELOCITY_FACTOR ) / this.BALL_VELOCITY;
+                            ball.body.velocity.setTo(this.BALL_VELOCITY * directionX, this.BALL_VELOCITY * directionY);
+                        }
                     }, this);
                     break;
                 case "board-fast":
                     this.ballGroup.iterate('name', 'ball', 0, function(ball){
-                        ball.body.velocity.setTo(ball.body.velocity.x / 1.75, ball.body.velocity.y / 1.75);
+                        if( Math.abs(ball.body.velocity.x) === this.BALL_VELOCITY_FAST){
+                            var directionX = (ball.body.velocity.x / this.BALL_VELOCITY_FACTOR ) / this.BALL_VELOCITY;
+                            var directionY = (ball.body.velocity.y / this.BALL_VELOCITY_FACTOR ) / this.BALL_VELOCITY;
+                            ball.body.velocity.setTo(this.BALL_VELOCITY * directionX, this.BALL_VELOCITY * directionY);
+                            console.log(ball.body.velocity.x);
+                        }
                     }, this);
                     break;
                 case "board-laser":
