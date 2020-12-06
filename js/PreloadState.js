@@ -19,6 +19,13 @@ Breakout.PreloadState = {
         this.load.image('octupus', 'ship-wreck/assets/images/sea-animals/oct.png');
         this.load.text('level1', 'ship-wreck/assets/data/level1.json');
         this.load.audio('enemy-hit', 'ship-wreck/assets/music/hit1.wav'); */ 
+        this.load.audio('brick-hit', 'assets/sounds/brick-hit.mp3');
+        this.load.audio('laser', 'assets/sounds/laser.mp3');
+        this.load.audio('pick-up-ability', 'assets/sounds/pick-up-ability.mp3');
+        this.load.audio('lose-life', 'assets/sounds/lose-life.mp3');
+        this.load.audio('lose-game', 'assets/sounds/lose-game.mp3');
+        this.load.audio('win', 'assets/sounds/win.mp3');
+        this.load.audio('background-music', 'assets/sounds/background-music.mp3');
     },
     create: function(){
             this.state.start('HomeState');

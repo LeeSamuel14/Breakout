@@ -8,6 +8,7 @@ Breakout.HomeState = {
         this.initLogo();
         this.initButtons();
         this.initGameText();
+        this.initGameSound();
     },
     initStateObject: function(){
         this.stateObject = {};
@@ -67,5 +68,9 @@ Breakout.HomeState = {
         this.text_Easy.anchor.setTo(0.5);
         this.text_Medium.anchor.setTo(0.5);
         this.text_Hard.anchor.setTo(0.5);
+    },
+    initGameSound: function(){
+        this.sound_BackgroundMusic = this.game.add.audio('background-music', 0.2, true);
+        this.sound_BackgroundMusic.play();
     }
 };

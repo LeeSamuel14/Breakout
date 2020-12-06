@@ -32,6 +32,7 @@ Breakout.GameState = {
         this.initLives();
         this.initAbilities();
         this.initLaser();
+        this.initGameSounds();
     },
     update: function(){
         this.moveBoard_desktop();
@@ -50,13 +51,13 @@ Breakout.GameState = {
         if(this.stateObject.difficulty){
             switch(this.stateObject.difficulty){
                 case 'Easy':
-                    this.difficultySpeed = 500;
-                    break;
-                case 'Medium':
                     this.difficultySpeed = 750;
                     break;
+                case 'Medium':
+                    this.difficultySpeed = 1100;
+                    break;
                 case 'Hard':
-                    this.difficultySpeed = 1000;
+                    this.difficultySpeed = 1350;
                     break; 
                 default:
                     this.difficultySpeed = 500;
@@ -209,6 +210,14 @@ Breakout.GameState = {
         this.laserTimer = this.game.time.create(false);
         this.laserGroup = this.game.add.group();
     },
+    initGameSounds: function(){
+        this.sound_BrickHit = this.game.add.audio('brick-hit', 5);
+        this.sound_Laser = this.game.add.audio('laser', 3);
+        this.sound_PickUpAbility = this.game.add.audio('pick-up-ability', 3);
+        this.sound_LoseLife = this.game.add.audio('lose-life', 3);
+        this.sound_LoseGame = this.game.add.audio('lose-game', 1);
+        this.sound_Win = this.game.add.audio('win', 1);
+    },
     moveBoard_desktop: function(){
         if((this.inputCursorKeys.left.isDown || this.WASD_Keys['left'].isDown) && this.board.x > 0){
             this.board.x -= this.BOARD_SPEED;
@@ -268,6 +277,7 @@ Breakout.GameState = {
             ball.kill();
         } 
         this.text_Score.text = 'SCORE: '+ this.score;
+        this.sound_BrickHit.play();
     },
     checkWinOrLose: function(ball){
         if(ball && this.board){
@@ -276,6 +286,7 @@ Breakout.GameState = {
                if(this.playerLives <= 0){
                 ball.kill();
                 this.setStateObjectValues(true);
+                this.sound_LoseGame.play();
                 this.state.start('WinLoseState', true, false, this.stateObject);
                }
                 else{
@@ -286,6 +297,7 @@ Breakout.GameState = {
                    else{
                     this.resetBall(ball); 
                     this.playerLives--; 
+                    this.sound_LoseLife.play();
                    }
                     this.text_PlayerLives.text = this.playerLives;
                }
@@ -294,7 +306,8 @@ Breakout.GameState = {
         }
         if(this.bricksDestroyed >= (this.currentLevel * this.BRICKS_PER_LINE) ){
             ++this.currentLevel;
-            this.setStateObjectValues(false)
+            this.setStateObjectValues(false);
+            this.sound_Win.play();
             this.state.start('WinLoseState', true, false, this.stateObject);
         }
     },
@@ -392,6 +405,7 @@ Breakout.GameState = {
         this.abilityTimer.start();
         this.abilityTimer.add(this.ABILITY_LIFESPAN, this.resetToBaseGame, this, null);
         ability.kill();
+        this.sound_PickUpAbility.play();
     },
     resetToBaseGame: function(){
         if(this.abilityName){
@@ -462,6 +476,7 @@ Breakout.GameState = {
                 laserX += this.board.width - 20;
             }
             this.laserTimer.add(500, this.shootLasers, this, null);
+            this.sound_Laser.play();
         }
     },
     pauseGame: function(){
