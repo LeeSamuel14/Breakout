@@ -5,6 +5,7 @@ Breakout.PreloadState = {
         this.load.image('board', 'assets/images/board.png');
         this.load.image('ball', 'assets/images/ball2.png');
         this.load.image('slider', 'assets/images/slider.jpg');
+        this.load.image('pause', 'assets/images/pause.png');
         this.load.atlasJSONHash('spritesheet_breakout', 'assets/images/spritesheet_breakout.png','assets/images/spritesheet_breakout.json');
         this.load.text('breakout_config', 'assets/data/breakout_config.json');
        /*  this.preloadBar = this.game.add.sprite(this.game.world.centerX,  this.game.world.centerY+128, 'preload');

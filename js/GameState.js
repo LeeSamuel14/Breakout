@@ -17,6 +17,7 @@ Breakout.GameState = {
         this.initConstValues();
         this.initGameBoarder();
         this.initControlsGraphics();
+        this.initPauseButton();
         this.initControls_mobile();
         this.initControls_desktop();
         //!Phaser.Device.desktop ? this.initControls_mobile() : this.initControls_desktop();
@@ -123,6 +124,13 @@ Breakout.GameState = {
         this.controlsLine.drawRoundedRect(20, this.game.height - 70, this.game.width - 40, 10, 7);
         this.controlsLine.endFill();
     },
+    initPauseButton: function(){
+        this.game.input.onDown.add(this.resumeGame, this);
+        this.button_Pause = this.game.add.button(this.game.width- 30, this.game.height - 30, 'pause');//, this.pauseGame, this);
+        this.button_Pause.events.onInputUp.add(this.pauseGame, this);
+        this.button_Pause.anchor.setTo(0.5);
+        this.button_Pause.scale.setTo(0.04);
+    },
     initBoard: function(){
         this.boardGroup = this.game.add.group();
         this.board = new Breakout.Board(this.game, this.BOARD_X, this.BOARD_Y, this.SPRITESHEET ,'board');
@@ -163,10 +171,14 @@ Breakout.GameState = {
     },
     initGameText: function(){
         var textStyle = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
+        var textStyle_FontLarge = { font: "40px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
         this.text_Score = this.game.add.text(10, 10, 'SCORE '+ this.score, textStyle);
         this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL '+ this.currentLevel, textStyle);
         this.text_PlayerLives = this.game.add.text(40, this.game.height - 50, ' ', textStyle);
         this.text_Ability = this.game.add.text(this.game.width/2, 30, 'Power s', textStyle);
+        this.text_Paused = this.game.add.text(this.game.width/2, this.game.height/2, 'GAME PAUSED', textStyle_FontLarge);
+        this.text_Paused.anchor.setTo(0.5);
+        this.text_Paused.visible = false;
         this.text_Ability.anchor.setTo(0.5);
         this.text_Ability.visible = false;
     },
@@ -452,5 +464,13 @@ Breakout.GameState = {
             }
             this.laserTimer.add(500, this.shootLasers, this, null);
         }
+    },
+    pauseGame: function(){
+        this.text_Paused.visible =true;
+        this.game.paused = true;
+    },
+    resumeGame: function(){
+        this.game.paused = false;
+        this.text_Paused.visible = this.game.paused;
     }
 };
