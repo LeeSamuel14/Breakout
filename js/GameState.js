@@ -9,11 +9,14 @@ Breakout.GameState = {
         this.stateObject = stateObject;
         this.currentLevel = this.stateObject.currentLevel; 
         this.score = this.stateObject.gameScore;
+        this.gameStarted = false;
+        this.buttonPressed = false;
     },
     create: function(){
         this.initDifficultySpeed();
         this.initConstValues();
         this.initGameBoarder();
+        this.initControlsGraphics();
         this.initControls_mobile();
         this.initControls_desktop();
         //!Phaser.Device.desktop ? this.initControls_mobile() : this.initControls_desktop();
@@ -114,6 +117,12 @@ Breakout.GameState = {
         this.line_LEFT.drawRect(0, 0, 5, this.game.height);
         this.line_LEFT.endFill();
     },
+    initControlsGraphics: function(){
+        this.controlsLine = this.game.add.graphics();
+        this.controlsLine.beginFill(0x33CCFF);
+        this.controlsLine.drawRoundedRect(20, this.game.height - 70, this.game.width - 40, 10, 7);
+        this.controlsLine.endFill();
+    },
     initBoard: function(){
         this.boardGroup = this.game.add.group();
         this.board = new Breakout.Board(this.game, this.BOARD_X, this.BOARD_Y, this.SPRITESHEET ,'board');
@@ -122,7 +131,7 @@ Breakout.GameState = {
     },
     initBall: function(){
         this.ballGroup = this.game.add.group();
-        this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, this.SPRITESHEET, 'ball', this.BALL_VELOCITY);
+        this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, this.SPRITESHEET, 'ball', 0);
         this.ball.scale.setTo(this.SPRITESHEET_SCALE);
         this.ballGroup.add(this.ball);
         //#lee ball srating off as you play look at phaser pause and pop ups in Phaser
@@ -156,14 +165,14 @@ Breakout.GameState = {
         var textStyle = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
         this.text_Score = this.game.add.text(10, 10, 'SCORE '+ this.score, textStyle);
         this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL '+ this.currentLevel, textStyle);
-        this.text_PlayerLives = this.game.add.text(40, this.game.height - 60, ' ', textStyle);
+        this.text_PlayerLives = this.game.add.text(40, this.game.height - 50, ' ', textStyle);
         this.text_Ability = this.game.add.text(this.game.width/2, 30, 'Power s', textStyle);
         this.text_Ability.anchor.setTo(0.5);
         this.text_Ability.visible = false;
     },
     initLives: function(){
         this.playerLives = this.PLAYER_LIVES;
-        this.ballLivesSprite = this.game.add.sprite(10, this.game.height -50, this.SPRITESHEET, 'heart');
+        this.ballLivesSprite = this.game.add.sprite(10, this.game.height -40, this.SPRITESHEET, 'heart');
         this.ballLivesSprite.scale.setTo(this.SPRITESHEET_SCALE);
         this.text_PlayerLives.text = this.playerLives;
     },
@@ -182,13 +191,29 @@ Breakout.GameState = {
     moveBoard_desktop: function(){
         if((this.inputCursorKeys.left.isDown || this.WASD_Keys['left'].isDown) && this.board.x > 0){
             this.board.x -= this.BOARD_SPEED;
+            this.buttonPressed = true;
         }
         else if((this.inputCursorKeys.right.isDown || this.WASD_Keys['right'].isDown) && this.board.x < (this.game.width - this.board.width) ){
             this.board.x += this.BOARD_SPEED;
+            this.buttonPressed = true;
         }
         this.dragButton.x = this.board.x;
+        if(!this.gameStarted && this.buttonPressed){
+            this.ballGroup.iterate('name', 'ball', 0, function(ball){
+                ball.body.velocity.setTo(this.BALL_VELOCITY , -this.BALL_VELOCITY);
+            }, this);
+            this.gameStarted = true;
+        }
+        
+
     },
     moveBoard_mobile: function(){
+        if(!this.gameStarted){
+            this.ballGroup.iterate('name', 'ball', 0, function(ball){
+                ball.body.velocity.setTo(this.BALL_VELOCITY , -this.BALL_VELOCITY);
+            }, this);
+            this.gameStarted = true;
+        }
         var newBoard_X = arguments[2];
         if( newBoard_X < 0){
             this.dragButton.x = 0;

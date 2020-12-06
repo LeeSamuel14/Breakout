@@ -21,15 +21,16 @@ Breakout.WinLoseState = {
         }
     },
     initButtons: function(){
-        this.button_StartNextGame = this.game.add.button(this.game.width/2, this.game.height/3 + 80, 'spritesheet_breakout', null, null,'light-blue-tile', 'light-blue-tile','light-blue-tile-broken','light-blue-tile-broken');
+        if(!this.stateObject.isLoss){
+            this.button_StartNextGame = this.game.add.button(this.game.width/2, this.game.height/3 + 80, 'spritesheet_breakout', null, null,'light-blue-tile', 'light-blue-tile','light-blue-tile-broken','light-blue-tile-broken');
+            this.button_StartNextGame.events.onInputDown.add(this.startNextGame, this);
+            this.button_StartNextGame.anchor.setTo(0.5);
+        }
         this.button_GoHome = this.game.add.button(this.game.width/2, this.game.height/1.5 + 30, 'spritesheet_breakout', null, null,'light-blue-tile', 'light-blue-tile','light-blue-tile-broken','light-blue-tile-broken');
-        this.button_StartNextGame.events.onInputDown.add(this.startNextGame, this);
         this.button_GoHome.events.onInputDown.add(this.goHome, this);
-        this.button_StartNextGame.anchor.setTo(0.5);
         this.button_GoHome.anchor.setTo(0.5);
     },
     initGameText: function(){
-        var startNextGameText = (this.stateObject.isLoss) ? 'NEW GAME' : 'LEVEL ' + this.stateObject.currentLevel;
         var winLoseText = (this.stateObject.isLoss) ? 'YOU LOSE...' : 'YOU WIN!';
         var textStyle_Blue = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
         var textStyle_Black = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#000000", align: "center" };
@@ -37,22 +38,23 @@ Breakout.WinLoseState = {
         var textStyle_Yellow = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#FFFF00", align: "center" };
         var textStyle_WinLose = (this.stateObject.isLoss) ? textStyle_Red : textStyle_Yellow;
         this.text_WinLose = this.game.add.text(this.game.width/2, 40, winLoseText, textStyle_WinLose);
-        this.text_NewHighScore = this.game.add.text(this.game.width/2, 110, 'NEW HIGH SCORE!', textStyle_Yellow);
         this.text_Score = this.game.add.text(this.game.width/2, 170, 'TOTAL GAME SCORE: '+ this.stateObject.gameScore, textStyle_Blue);
         this.text_HighScore = this.game.add.text(this.game.width/2, 230, 'HIGH SCORE: '+ this.stateObject.highScore, textStyle_Blue);
-        this.text_StartNextGame = this.game.add.text(this.game.width/2, this.game.height/3 + 80, startNextGameText, textStyle_Black);
         this.text_GoHome = this.game.add.text(this.game.width/2, this.game.height/1.5 + 30, 'HOME', textStyle_Black);
         this.text_WinLose .anchor.setTo(0.5);
         this.text_Score.anchor.setTo(0.5);
         this.text_HighScore.anchor.setTo(0.5);
-        this.text_StartNextGame.anchor.setTo(0.5);
         this.text_GoHome.anchor.setTo(0.5);
-        this.text_NewHighScore.anchor.setTo(0.5);
         if(this.newHighScore){
-            this.text_NewHighScore.visible = true;   
+            this.text_NewHighScore = this.game.add.text(this.game.width/2, 110, 'NEW HIGH SCORE!', textStyle_Yellow); 
+            this.text_NewHighScore.anchor.setTo(0.5);
+
         }
-        else{
-            this.text_NewHighScore.visible = false;
+        if(!this.stateObject.isLoss){
+            var startNextGameText = 'LEVEL ' + this.stateObject.currentLevel;
+            this.text_StartNextGame = this.game.add.text(this.game.width/2, this.game.height/3 + 80, startNextGameText, textStyle_Black);
+            this.text_StartNextGame.anchor.setTo(0.5);
+
         }
     },
     startNextGame: function(){
