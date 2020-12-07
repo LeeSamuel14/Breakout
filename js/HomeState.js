@@ -60,7 +60,7 @@ Breakout.HomeState = {
           }, this);
     },
     initGameText: function(){
-        var textStyle = { font: "36px Raavi", fontStyle: "bold", fill: "#000000", align: "center" };
+        var textStyle = { font: "32px Press Start 2P", fontStyle: "bold", fill: "#000", align: "center" };
         //this.text_Home = this.game.add.text(10, 10, 'HOME', textStyle);
         this.text_Easy = this.game.add.text(this.game.width/2, this.game.height/4 + 60, 'EASY', textStyle);
         this.text_Medium = this.game.add.text(this.game.width/2, this.game.height/2 + 60, 'MEDIUM', textStyle);

@@ -2,6 +2,7 @@ var Breakout = Breakout|| {};
 
 Breakout.PreloadState = {
     preload: function(){
+        this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
         //this.load.image('board', 'assets/images/board.png');
         //this.load.image('ball', 'assets/images/ball2.png');
         this.load.image('slider', 'assets/images/slider.jpg');

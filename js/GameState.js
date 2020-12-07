@@ -51,16 +51,16 @@ Breakout.GameState = {
         if(this.stateObject.difficulty){
             switch(this.stateObject.difficulty){
                 case 'Easy':
-                    this.difficultySpeed = 750;
+                    this.difficultySpeed = 250;
                     break;
                 case 'Medium':
-                    this.difficultySpeed = 1100;
+                    this.difficultySpeed = 500;
                     break;
                 case 'Hard':
-                    this.difficultySpeed = 1350;
+                    this.difficultySpeed = 750;
                     break; 
                 default:
-                    this.difficultySpeed = 500;
+                    this.difficultySpeed = 250;
                     break;
             }
         }
@@ -180,21 +180,23 @@ Breakout.GameState = {
         }
     },
     initGameText: function(){
-        var textStyle = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
-        var textStyle_FontLarge = { font: "40px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
-        this.text_Score = this.game.add.text(10, 10, 'SCORE '+ this.score, textStyle);
-        this.text_Level = this.game.add.text(this.game.width - 170, 10, 'LEVEL '+ this.currentLevel, textStyle);
+        var textStyle = { font: "22px Press Start 2P", fontStyle: "bold", fill: "#33ccff", align: "center" };
+        this.text_Score = this.game.add.text(10, 10, 'SCORE:'+ this.score,  textStyle);
+        //this.text_Score.font = 'Press Start 2P';
+        this.text_Level = this.game.add.text(this.game.width/2 + 115, 10, 'LEVEL:'+ this.currentLevel, textStyle);
         this.text_PlayerLives = this.game.add.text(40, 70, ' ', textStyle);
         this.text_Ability = this.game.add.text(this.game.width/2, 90, 'Power s', textStyle);
-        this.text_Paused = this.game.add.text(this.game.width/2, this.game.height/2, 'GAME PAUSED', textStyle_FontLarge);
+        this.text_Paused = this.game.add.text(this.game.width/2, this.game.height/2, 'GAME PAUSED', textStyle);
+        this.text_Paused.fontSize = 40;
         this.text_Paused.anchor.setTo(0.5);
         this.text_Paused.visible = false;
         this.text_Ability.anchor.setTo(0.5);
         this.text_Ability.visible = false;
+        //this.text_Score.setStyle({fontSize: 50, fill: "#33ccff"});
     },
     initLives: function(){
         this.playerLives = this.PLAYER_LIVES;
-        this.ballLivesSprite = this.game.add.sprite(10, 80, this.SPRITESHEET, 'heart');
+        this.ballLivesSprite = this.game.add.sprite(10, 70, this.SPRITESHEET, 'heart');
         this.ballLivesSprite.scale.setTo(this.SPRITESHEET_SCALE);
         this.text_PlayerLives.text = this.playerLives;
     },
@@ -276,7 +278,7 @@ Breakout.GameState = {
         if(ball.name === 'laser'){
             ball.kill();
         } 
-        this.text_Score.text = 'SCORE: '+ this.score;
+        this.text_Score.text = 'SCORE:'+ this.score;
         this.sound_BrickHit.play();
     },
     checkWinOrLose: function(ball){
@@ -393,6 +395,7 @@ Breakout.GameState = {
                 this.score += 500;
                 this.abilityActive = false;
                 this.text_Ability.visible = false;
+                this.text_Score.text = 'SCORE:'+ this.score;
                 break;
             case "heart":
                 this.playerLives ++;
@@ -401,7 +404,6 @@ Breakout.GameState = {
                 this.text_Ability.visible = false;
                 break;
         }
-        this.text_Score.text = 'SCORE: '+ this.score;
         this.abilityTimer.start();
         this.abilityTimer.add(this.ABILITY_LIFESPAN, this.resetToBaseGame, this, null);
         ability.kill();

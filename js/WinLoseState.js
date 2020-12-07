@@ -32,14 +32,15 @@ Breakout.WinLoseState = {
     },
     initGameText: function(){
         var winLoseText = (this.stateObject.isLoss) ? 'YOU LOSE...' : 'YOU WIN!';
-        var textStyle_Blue = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#33ccff", align: "center" };
-        var textStyle_Black = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#000000", align: "center" };
-        var textStyle_Red = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#FF0000", align: "center" };
-        var textStyle_Yellow = { font: "32px Microsoft JhengHei UI", fontStyle: "bold", fill: "#FFFF00", align: "center" };
+        var textStyle = { font: "30px Press Start 2P", fontStyle: "bold", fill: "#000", align: "center" };
+        var textStyle_Blue = { font: "30px Press Start 2P", fontStyle: "bold", fill: "#33ccff", align: "center" };
+        var textStyle_Black = { font: "30px Press Start 2P", fontStyle: "bold", fill: "#000000", align: "center" };
+        var textStyle_Red = { font: "30px Press Start 2P", fontStyle: "bold", fill: "#FF0000", align: "center" };
+        var textStyle_Yellow = { font: "30px Press Start 2P", fontStyle: "bold", fill: "#FFFF00", align: "center" };
         var textStyle_WinLose = (this.stateObject.isLoss) ? textStyle_Red : textStyle_Yellow;
         this.text_WinLose = this.game.add.text(this.game.width/2, 40, winLoseText, textStyle_WinLose);
-        this.text_Score = this.game.add.text(this.game.width/2, 170, 'TOTAL GAME SCORE: '+ this.stateObject.gameScore, textStyle_Blue);
-        this.text_HighScore = this.game.add.text(this.game.width/2, 230, 'HIGH SCORE: '+ this.stateObject.highScore, textStyle_Blue);
+        this.text_Score = this.game.add.text(this.game.width/2, 170, 'GAME SCORE:'+ this.stateObject.gameScore, textStyle_Blue);
+        this.text_HighScore = this.game.add.text(this.game.width/2, 230, 'HIGH SCORE:'+ this.stateObject.highScore, textStyle_Blue);
         this.text_GoHome = this.game.add.text(this.game.width/2, this.game.height/1.5 + 30, 'HOME', textStyle_Black);
         this.text_WinLose .anchor.setTo(0.5);
         this.text_Score.anchor.setTo(0.5);
