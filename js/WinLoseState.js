@@ -5,9 +5,15 @@ Breakout.WinLoseState = {
         this.stateObject = stateObject;
     },
     create: function() {
+        this.initCurrentLevel();
         this.initSetHighScore();
         this.initButtons();
         this.initGameText();
+    },
+    initCurrentLevel: function(){
+        if(!this.stateObject.isLoss){
+            this.stateObject.currentLevel += 1;
+        }  
     },
     initSetHighScore: function(){
         if(localStorage.getItem('highScore')){
@@ -59,11 +65,6 @@ Breakout.WinLoseState = {
         }
     },
     startNextGame: function(){
-        if(this.stateObject.isLoss){
-            this.stateObject.currentLevel = 1;
-            this.stateObject.gameScore = 0;
-            this.stateObject.isLoss = false;
-        }
         this.state.start('GameState', true, false, this.stateObject);
     },
     goHome: function(){

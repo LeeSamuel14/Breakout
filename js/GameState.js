@@ -26,6 +26,7 @@ Breakout.GameState = {
         //!Phaser.Device.desktop ? this.initControls_mobile() : this.initControls_desktop();
         this.initBoard();
         this.initBall();
+        this.initLevels();
         this.initBrickValues();
         this.initBricks();
         this.initGameText();
@@ -51,13 +52,13 @@ Breakout.GameState = {
         if(this.stateObject.difficulty){
             switch(this.stateObject.difficulty){
                 case 'Easy':
-                    this.difficultySpeed = 250;
+                    this.difficultySpeed = 300;
                     break;
                 case 'Medium':
-                    this.difficultySpeed = 500;
+                    this.difficultySpeed = 550;
                     break;
                 case 'Hard':
-                    this.difficultySpeed = 750;
+                    this.difficultySpeed = 800;
                     break; 
                 default:
                     this.difficultySpeed = 250;
@@ -152,37 +153,53 @@ Breakout.GameState = {
         this.ball = new Breakout.Ball(this.game, this.BALL_X, this.BALL_Y, this.SPRITESHEET, 'ball', 0);
         this.ball.scale.setTo(this.SPRITESHEET_SCALE);
         this.ballGroup.add(this.ball);
-        //#lee ball srating off as you play look at phaser pause and pop ups in Phaser
+    },
+    initLevels: function(){
+        this.levelConfig = JSON.parse(this.game.cache.getText('level_config'));
+        this.brickCountForLevel = 0;
     },
     initBrickValues: function(){
         this.breakoutConfig = JSON.parse(this.game.cache.getText('breakout_config'));
         this.bricksDestroyed = 0;
     },
     initBricks: function(){
-        var brick_width = 12.5;
-        var brick_height = 128;
-        /* var brick_width = 12.5;
-        var brick_height = 64; */
-
         this.bricksGroup = this.game.add.group();
-        for(var i = 0; i < this.currentLevel * this.BRICKS_PER_LINE; i++){ //this.currentLevel * 6 //bricks per level
-            var randomNumber = Math.floor(Math.random()*(this.breakoutConfig.bricks.length));
-            var brickData = this.breakoutConfig.bricks[randomNumber];
-            var brick = new Breakout.Brick(this.game, brick_width, brick_height, this.SPRITESHEET, brickData.name);
-            brick.brickData = brickData;
-            brick.scale.setTo(this.SPRITESHEET_SCALE);
-            this.bricksGroup.add(brick);
-            brick_width += 70;
-            if(brick_width + 70 > this.game.width){
-                brick_width = 12.5;
-                brick_height += 28;
+        var levelText = 'level'+ this.currentLevel;
+        if(this.levelConfig.levels[levelText]){
+            var level = this.levelConfig.levels[levelText];
+            this.brickCountForLevel = level.brickPositions_X.length;
+            for(var i = 0; i < level.brickPositions_X.length; i++){
+                var randomNumber = Math.floor(Math.random()*(this.breakoutConfig.bricks.length));
+                var brickData = this.breakoutConfig.bricks[randomNumber];
+                var brick = new Breakout.Brick(this.game, level.brickPositions_X[i], level.brickPositions_Y[i], this.SPRITESHEET, brickData.name);
+                brick.brickData = brickData;
+                brick.anchor.setTo(0.5);
+                brick.scale.setTo(this.SPRITESHEET_SCALE);
+                this.bricksGroup.add(brick);
+            }
+        }
+        else{
+            var brick_position_X = 25; 
+            var brick_position_Y = 128;
+            this.brickCountForLevel = (this.currentLevel - 5) * this.BRICKS_PER_LINE;
+            for(var i = 0; i < this.brickCountForLevel; i++){ 
+                var randomNumber = Math.floor(Math.random()*(this.breakoutConfig.bricks.length));
+                var brickData = this.breakoutConfig.bricks[randomNumber];
+                var brick = new Breakout.Brick(this.game, brick_position_X, brick_position_Y, this.SPRITESHEET, brickData.name);
+                brick.brickData = brickData;
+                brick.scale.setTo(this.SPRITESHEET_SCALE);
+                this.bricksGroup.add(brick);
+                brick_position_X += 80; // next x position
+                if(brick_position_X + 70 > this.game.width){ //go down a level
+                    brick_position_X = 25;
+                    brick_position_Y += 28;
+                } 
             }
         }
     },
     initGameText: function(){
         var textStyle = { font: "22px Press Start 2P", fontStyle: "bold", fill: "#33ccff", align: "center" };
         this.text_Score = this.game.add.text(10, 10, 'SCORE:'+ this.score,  textStyle);
-        //this.text_Score.font = 'Press Start 2P';
         this.text_Level = this.game.add.text(this.game.width/2 + 115, 10, 'LEVEL:'+ this.currentLevel, textStyle);
         this.text_PlayerLives = this.game.add.text(40, 70, ' ', textStyle);
         this.text_Ability = this.game.add.text(this.game.width/2, 90, 'Power s', textStyle);
@@ -192,7 +209,6 @@ Breakout.GameState = {
         this.text_Paused.visible = false;
         this.text_Ability.anchor.setTo(0.5);
         this.text_Ability.visible = false;
-        //this.text_Score.setStyle({fontSize: 50, fill: "#33ccff"});
     },
     initLives: function(){
         this.playerLives = this.PLAYER_LIVES;
@@ -213,12 +229,14 @@ Breakout.GameState = {
         this.laserGroup = this.game.add.group();
     },
     initGameSounds: function(){
-        this.sound_BrickHit = this.game.add.audio('brick-hit', 5);
-        this.sound_Laser = this.game.add.audio('laser', 3);
-        this.sound_PickUpAbility = this.game.add.audio('pick-up-ability', 3);
-        this.sound_LoseLife = this.game.add.audio('lose-life', 3);
-        this.sound_LoseGame = this.game.add.audio('lose-game', 1);
-        this.sound_Win = this.game.add.audio('win', 1);
+        this.sound_BackgroundMusic = this.game.add.audio('background-music', 0.1, true);
+        this.sound_BackgroundMusic.play();
+        this.sound_BrickHit = this.game.add.audio('brick-hit', 0.9);
+        this.sound_Laser = this.game.add.audio('laser', 0.6);
+        this.sound_PickUpAbility = this.game.add.audio('pick-up-ability', 0.9);
+        this.sound_LoseLife = this.game.add.audio('lose-life', 0.9);
+        this.sound_LoseGame = this.game.add.audio('lose-game', 0.9);
+        this.sound_Win = this.game.add.audio('win', 0.9);
     },
     moveBoard_desktop: function(){
         if((this.inputCursorKeys.left.isDown || this.WASD_Keys['left'].isDown) && this.board.x > 0){
@@ -288,6 +306,7 @@ Breakout.GameState = {
                if(this.playerLives <= 0){
                 ball.kill();
                 this.setStateObjectValues(true);
+                this.sound_BackgroundMusic.stop();
                 this.sound_LoseGame.play();
                 this.state.start('WinLoseState', true, false, this.stateObject);
                }
@@ -306,9 +325,9 @@ Breakout.GameState = {
                 
             }
         }
-        if(this.bricksDestroyed >= (this.currentLevel * this.BRICKS_PER_LINE) ){
-            ++this.currentLevel;
+        if(this.bricksDestroyed >= this.brickCountForLevel ){
             this.setStateObjectValues(false);
+            this.sound_BackgroundMusic.stop();
             this.sound_Win.play();
             this.state.start('WinLoseState', true, false, this.stateObject);
         }
@@ -323,8 +342,6 @@ Breakout.GameState = {
         var abilitySpriteName = this.generateRandomAbility();
         var randomNumber = Math.floor(Math.random()*(this.game.width - 100));
         var ability = new Breakout.Ability(this.game, randomNumber, 0, this.SPRITESHEET, abilitySpriteName);
-        //console.log(abilitySpriteName);
-        //console.log(ability.frame);
         ability.scale.setTo(0.2);
         if(abilitySpriteName === 'heart'){
             ability.scale.setTo(0.3); 
@@ -433,7 +450,7 @@ Breakout.GameState = {
                             var directionX = (ball.body.velocity.x / this.BALL_VELOCITY_FACTOR ) / this.BALL_VELOCITY;
                             var directionY = (ball.body.velocity.y / this.BALL_VELOCITY_FACTOR ) / this.BALL_VELOCITY;
                             ball.body.velocity.setTo(this.BALL_VELOCITY * directionX, this.BALL_VELOCITY * directionY);
-                            console.log(ball.body.velocity.x);
+
                         }
                     }, this);
                     break;
@@ -459,11 +476,11 @@ Breakout.GameState = {
         this.abilityTimer.stop();
     },
     resetBall: function(ball){
+        this.resetToBaseGame();
         ball.reset(this.BALL_X, this.BALL_Y );
         this.text_Ability.visible = false;
         this.game.time.events.add(2000, function(){ 
             ball.body.velocity.setTo(this.BALL_VELOCITY, -this.BALL_VELOCITY);
-            this.resetToBaseGame();
         }, this);
         
     },

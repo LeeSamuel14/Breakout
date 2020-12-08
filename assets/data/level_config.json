@@ -1,7 +1,7 @@
 {
     "levels":{
         "level1":{
-            "brickPositions_X": [20, 90, 160, 230, 300, 370, 440, 510],
+            "brickPositions_X": [50, 120, 190, 260, 330, 400, 470, 540],
             "brickPositions_Y": [120, 120, 120, 120, 120, 120, 120, 120]
         },
         "level2":{

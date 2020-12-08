@@ -70,7 +70,7 @@ Breakout.HomeState = {
         this.text_Hard.anchor.setTo(0.5);
     },
     initGameSound: function(){
-        this.sound_BackgroundMusic = this.game.add.audio('background-music', 0.2, true);
-        this.sound_BackgroundMusic.play();
+        //this.sound_BackgroundMusic = this.game.add.audio('background-music', 0.2, true);
+        //this.sound_BackgroundMusic.play();
     }
 };
