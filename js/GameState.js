@@ -55,10 +55,10 @@ Breakout.GameState = {
                     this.difficultySpeed = 700;
                     break;
                 case 'Medium':
-                    this.difficultySpeed = 850;
+                    this.difficultySpeed = 1000;
                     break;
                 case 'Hard':
-                    this.difficultySpeed = 1000;
+                    this.difficultySpeed = 1300;
                     break; 
                 default:
                     this.difficultySpeed = 550;
