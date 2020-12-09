@@ -310,7 +310,7 @@ Breakout.GameState = {
                 this.sound_LoseGame.play();
                 this.state.start('WinLoseState', true, false, this.stateObject);
                }
-                /* else{
+                else{
                    if(this.ballGroup.length > 1){
                     ball.kill(); 
                     this.ballGroup.remove(ball);
@@ -339,7 +339,7 @@ Breakout.GameState = {
         this.stateObject.isLoss = isLoss;
     },
     generateAbility: function(){
-        var abilitySpriteName = 'board-laser';//this.generateRandomAbility();
+        var abilitySpriteName = this.generateRandomAbility();
         var randomNumber = Math.floor(Math.random()*(this.game.width - 100));
         var ability = new Breakout.Ability(this.game, randomNumber, 0, this.SPRITESHEET, abilitySpriteName);
         ability.scale.setTo(0.2);
