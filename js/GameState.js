@@ -52,16 +52,16 @@ Breakout.GameState = {
         if(this.stateObject.difficulty){
             switch(this.stateObject.difficulty){
                 case 'Easy':
-                    this.difficultySpeed = 300;
+                    this.difficultySpeed = 500;
                     break;
                 case 'Medium':
-                    this.difficultySpeed = 550;
+                    this.difficultySpeed = 650;
                     break;
                 case 'Hard':
                     this.difficultySpeed = 800;
                     break; 
                 default:
-                    this.difficultySpeed = 250;
+                    this.difficultySpeed = 550;
                     break;
             }
         }
@@ -285,7 +285,7 @@ Breakout.GameState = {
             brick.loadTexture(this.SPRITESHEET, brick.brickData.broken);
         }
         brick.alpha -= 1/brick.brickData.difficulty;
-        if(brick.alpha <= 0.3){
+        if(brick.alpha <= 0.4){
             this.bricksDestroyed++;
             brick.kill();
             this.score += this.brickDieScore;
