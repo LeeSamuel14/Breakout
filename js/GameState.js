@@ -52,16 +52,16 @@ Breakout.GameState = {
         if(this.stateObject.difficulty){
             switch(this.stateObject.difficulty){
                 case 'Easy':
-                    this.difficultySpeed = 700;
+                    this.difficultySpeed = 500;
                     break;
                 case 'Medium':
-                    this.difficultySpeed = 1000;
+                    this.difficultySpeed = 700;
                     break;
                 case 'Hard':
-                    this.difficultySpeed = 1300;
+                    this.difficultySpeed = 900;
                     break; 
                 default:
-                    this.difficultySpeed = 550;
+                    this.difficultySpeed = 500;
                     break;
             }
         }
