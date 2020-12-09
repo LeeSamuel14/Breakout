@@ -310,7 +310,7 @@ Breakout.GameState = {
                 this.sound_LoseGame.play();
                 this.state.start('WinLoseState', true, false, this.stateObject);
                }
-                else{
+                /* else{
                    if(this.ballGroup.length > 1){
                     ball.kill(); 
                     this.ballGroup.remove(ball);
@@ -339,7 +339,7 @@ Breakout.GameState = {
         this.stateObject.isLoss = isLoss;
     },
     generateAbility: function(){
-        var abilitySpriteName = this.generateRandomAbility();
+        var abilitySpriteName = 'board-laser';//this.generateRandomAbility();
         var randomNumber = Math.floor(Math.random()*(this.game.width - 100));
         var ability = new Breakout.Ability(this.game, randomNumber, 0, this.SPRITESHEET, abilitySpriteName);
         ability.scale.setTo(0.2);
@@ -490,7 +490,7 @@ Breakout.GameState = {
             for(var i = 0; i < 2; i++){
                 var laser = new Breakout.Laser(this.game, laserX , this.board.y - 20 , this.SPRITESHEET ,'laser');
                 laser.scale.setTo(0.5);
-                laser.body.velocity.setTo(0, -600);
+                laser.body.velocity.setTo(0, -1200);
                 this.laserGroup.add(laser);
                 laserX += this.board.width - 20;
             }
