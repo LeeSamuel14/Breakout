@@ -8,7 +8,7 @@ Breakout.HomeState = {
         this.initLogo();
         this.initButtons();
         this.initGameText();
-        this.initGameSound();
+        this.initHighScore();
     },
     initStateObject: function(){
         this.stateObject = {};
@@ -61,16 +61,24 @@ Breakout.HomeState = {
     },
     initGameText: function(){
         var textStyle = { font: "32px Press Start 2P", fontStyle: "bold", fill: "#000", align: "center" };
+        var textStyle_HighScore = { font: "26px Press Start 2P", fontStyle: "bold", fill: "#33CCFF", align: "center" };
         //this.text_Home = this.game.add.text(10, 10, 'HOME', textStyle);
         this.text_Easy = this.game.add.text(this.game.width/2, this.game.height/4 + 60, 'EASY', textStyle);
         this.text_Medium = this.game.add.text(this.game.width/2, this.game.height/2 + 60, 'MEDIUM', textStyle);
         this.text_Hard = this.game.add.text(this.game.width/2, this.game.height - this.game.height/4 + 60, 'HARD', textStyle);
+        this.text_HighScore = this.game.add.text(this.game.width/2, this.game.height -  20, 'HIGH SCORE: ', textStyle_HighScore);
         this.text_Easy.anchor.setTo(0.5);
         this.text_Medium.anchor.setTo(0.5);
         this.text_Hard.anchor.setTo(0.5);
+        this.text_HighScore.anchor.setTo(0.5);
     },
-    initGameSound: function(){
-        //this.sound_BackgroundMusic = this.game.add.audio('background-music', 0.2, true);
-        //this.sound_BackgroundMusic.play();
+    initHighScore: function(){
+        if(localStorage.getItem('highScore')){
+            var highScore = localStorage.getItem('highScore');
+            this.text_HighScore.text = 'HIGH SCORE: ' + highScore;
+        }
+        else{
+            this.text_HighScore.text = 'HIGH SCORE: 0';
+        }
     }
 };
