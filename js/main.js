@@ -1,16 +1,1 @@
-var Breakout = Breakout || {};
-Breakout.game = new Phaser.Game(600, 800, Phaser.AUTO);
-
-this.WebFontConfig = {
-    google: {
-      families: ['Bungee','Revalia','Berkshire Swash','Press Start 2P', 'Audiowide']
-    }
-};
-
-Breakout.game.state.add('BootState', Breakout.BootState);
-Breakout.game.state.add('PreloadState', Breakout.PreloadState);
-Breakout.game.state.add('HomeState', Breakout.HomeState);
-Breakout.game.state.add('GameState', Breakout.GameState);
-Breakout.game.state.add('WinLoseState', Breakout.WinLoseState);
-
-Breakout.game.state.start('BootState');
+var _0x9f0c=['GameState','game','Audiowide','Berkshire\x20Swash','BootState','Bungee','WebFontConfig','AUTO','HomeState','PreloadState','Press\x20Start\x202P','add','WinLoseState','state'];(function(_0x367857,_0x48ef81){var _0x9f0cae=function(_0x4ffab8){while(--_0x4ffab8){_0x367857['push'](_0x367857['shift']());}};_0x9f0cae(++_0x48ef81);}(_0x9f0c,0xef));var _0x4ffa=function(_0x367857,_0x48ef81){_0x367857=_0x367857-0x150;var _0x9f0cae=_0x9f0c[_0x367857];return _0x9f0cae;};var _0xdc6705=_0x4ffa,Breakout=Breakout||{};Breakout[_0xdc6705(0x150)]=new Phaser['Game'](0x258,0x320,Phaser[_0xdc6705(0x156)]),this[_0xdc6705(0x155)]={'google':{'families':[_0xdc6705(0x154),'Revalia',_0xdc6705(0x152),_0xdc6705(0x159),_0xdc6705(0x151)]}},Breakout[_0xdc6705(0x150)][_0xdc6705(0x15c)]['add'](_0xdc6705(0x153),Breakout[_0xdc6705(0x153)]),Breakout[_0xdc6705(0x150)][_0xdc6705(0x15c)][_0xdc6705(0x15a)](_0xdc6705(0x158),Breakout[_0xdc6705(0x158)]),Breakout[_0xdc6705(0x150)][_0xdc6705(0x15c)][_0xdc6705(0x15a)]('HomeState',Breakout[_0xdc6705(0x157)]),Breakout[_0xdc6705(0x150)][_0xdc6705(0x15c)][_0xdc6705(0x15a)]('GameState',Breakout[_0xdc6705(0x15d)]),Breakout[_0xdc6705(0x150)][_0xdc6705(0x15c)][_0xdc6705(0x15a)](_0xdc6705(0x15b),Breakout[_0xdc6705(0x15b)]),Breakout['game'][_0xdc6705(0x15c)]['start'](_0xdc6705(0x153));

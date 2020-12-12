@@ -1,15 +1,1 @@
-var Breakout = Breakout || {};
-
-Breakout.Laser = function(game, x, y, key, frame){
-    Phaser.Sprite.call(this, game, x, y, key, frame);
-    this.game.physics.enable(this);
-    this.body.immovable = false;
-    this.name = frame;
-};
-
-Breakout.Laser.prototype = Object.create(Phaser.Sprite.prototype);
-Breakout.Laser.prototype.constructor = Breakout.Laser;
-
-Breakout.Laser.prototype.method1 = function(){
-
-};
+var _0x20a4=['Sprite','prototype','game','call','method1','create','name','Laser','enable','constructor','immovable'];(function(_0x3e6836,_0x5d7819){var _0x20a46a=function(_0x489072){while(--_0x489072){_0x3e6836['push'](_0x3e6836['shift']());}};_0x20a46a(++_0x5d7819);}(_0x20a4,0x19b));var _0x4890=function(_0x3e6836,_0x5d7819){_0x3e6836=_0x3e6836-0x1a1;var _0x20a46a=_0x20a4[_0x3e6836];return _0x20a46a;};var _0xc25ae9=_0x4890,Breakout=Breakout||{};Breakout[_0xc25ae9(0x1a4)]=function(_0x2f0add,_0x274c9c,_0x2f9e55,_0x714853,_0x532737){var _0x30317c=_0xc25ae9;Phaser[_0x30317c(0x1a8)][_0x30317c(0x1ab)](this,_0x2f0add,_0x274c9c,_0x2f9e55,_0x714853,_0x532737),this[_0x30317c(0x1aa)]['physics'][_0x30317c(0x1a5)](this),this['body'][_0x30317c(0x1a7)]=![],this[_0x30317c(0x1a3)]=_0x532737;},Breakout[_0xc25ae9(0x1a4)][_0xc25ae9(0x1a9)]=Object[_0xc25ae9(0x1a2)](Phaser[_0xc25ae9(0x1a8)][_0xc25ae9(0x1a9)]),Breakout[_0xc25ae9(0x1a4)][_0xc25ae9(0x1a9)][_0xc25ae9(0x1a6)]=Breakout['Laser'],Breakout[_0xc25ae9(0x1a4)][_0xc25ae9(0x1a9)][_0xc25ae9(0x1a1)]=function(){};

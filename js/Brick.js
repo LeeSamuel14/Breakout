@@ -1,14 +1,1 @@
-var Breakout = Breakout || {};
-
-Breakout.Brick = function(game, x, y, key, frame){
-    Phaser.Sprite.call(this, game, x, y, key, frame);
-    this.game.physics.enable(this);
-    this.body.immovable = true;
-};
-
-Breakout.Brick.prototype = Object.create(Phaser.Sprite.prototype);
-Breakout.Brick.prototype.constructor = Breakout.Brick;
-
-Breakout.Brick.prototype.method1 = function(){
-
-};
+var _0x1f06=['body','Brick','method1','enable','Sprite','prototype','game','constructor'];(function(_0x563d51,_0x3ea4a9){var _0x1f06f9=function(_0x2f4f88){while(--_0x2f4f88){_0x563d51['push'](_0x563d51['shift']());}};_0x1f06f9(++_0x3ea4a9);}(_0x1f06,0x167));var _0x2f4f=function(_0x563d51,_0x3ea4a9){_0x563d51=_0x563d51-0xbb;var _0x1f06f9=_0x1f06[_0x563d51];return _0x1f06f9;};var _0x34fb94=_0x2f4f,Breakout=Breakout||{};Breakout[_0x34fb94(0xbd)]=function(_0x489eb1,_0x5490c9,_0x5cf665,_0x564a48,_0x29706c){var _0x580d15=_0x34fb94;Phaser[_0x580d15(0xc0)]['call'](this,_0x489eb1,_0x5490c9,_0x5cf665,_0x564a48,_0x29706c),this[_0x580d15(0xc2)]['physics'][_0x580d15(0xbf)](this),this[_0x580d15(0xbc)]['immovable']=!![];},Breakout[_0x34fb94(0xbd)][_0x34fb94(0xc1)]=Object['create'](Phaser[_0x34fb94(0xc0)][_0x34fb94(0xc1)]),Breakout[_0x34fb94(0xbd)]['prototype'][_0x34fb94(0xbb)]=Breakout['Brick'],Breakout['Brick']['prototype'][_0x34fb94(0xbe)]=function(){};

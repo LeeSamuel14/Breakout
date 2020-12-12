@@ -1,17 +1,1 @@
-var Breakout = Breakout || {};
-
-Breakout.BootState = {
-    init: function() {
-        this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL ;
-        this.game.scale.pageAlignHorizontally = true;
-        this.game.scale.pageAlignVertically = true;
-    },
-    preload: function() {
-        /* this.load.image('preload','assets/images/preloader/bar.png'); */
-        this.load.image('logo', 'assets/images/logo.png');
-        this.load.image('bar', 'assets/images/bar.png');
-    },
-    create: function() {
-        this.state.start('PreloadState');   
-    }
-};
+var _0x2008=['ScaleManager','assets/images/bar.png','SHOW_ALL','logo','scale','game','scaleMode','start','state','pageAlignHorizontally','load','image'];(function(_0x2e0ff4,_0x3e89a4){var _0x200824=function(_0x317ae2){while(--_0x317ae2){_0x2e0ff4['push'](_0x2e0ff4['shift']());}};_0x200824(++_0x3e89a4);}(_0x2008,0xbc));var _0x317a=function(_0x2e0ff4,_0x3e89a4){_0x2e0ff4=_0x2e0ff4-0x1ab;var _0x200824=_0x2008[_0x2e0ff4];return _0x200824;};var Breakout=Breakout||{};Breakout['BootState']={'init':function(){var _0x4bdade=_0x317a;this[_0x4bdade(0x1b4)][_0x4bdade(0x1b3)][_0x4bdade(0x1b5)]=Phaser[_0x4bdade(0x1af)][_0x4bdade(0x1b1)],this[_0x4bdade(0x1b4)][_0x4bdade(0x1b3)][_0x4bdade(0x1ac)]=!![],this['game'][_0x4bdade(0x1b3)]['pageAlignVertically']=!![];},'preload':function(){var _0x5c7c5c=_0x317a;this[_0x5c7c5c(0x1ad)][_0x5c7c5c(0x1ae)](_0x5c7c5c(0x1b2),'assets/images/logo.png'),this[_0x5c7c5c(0x1ad)]['image']('bar',_0x5c7c5c(0x1b0));},'create':function(){var _0x4b8313=_0x317a;this[_0x4b8313(0x1ab)][_0x4b8313(0x1b6)]('PreloadState');}};

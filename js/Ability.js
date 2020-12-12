@@ -1,18 +1,1 @@
-var Breakout = Breakout || {};
-
-Breakout.Ability = function(game, x, y, key, frame){
-    Phaser.Sprite.call(this, game, x, y, key, frame);
-    this.game.physics.enable(this);
-    this.body.velocity.setTo(0,250);
-    this.body.immovable = false;
-    this.name = frame;
-    //this.body.setSize(this.width -700, this.height - 800);
-    //this.body.gravity.setTo(0.5);
-};
-
-Breakout.Ability.prototype = Object.create(Phaser.Sprite.prototype);
-Breakout.Ability.prototype.constructor = Breakout.Ability;
-
-Breakout.Ability.prototype.method1 = function(){
-
-};
+var _0x4d7f=['constructor','velocity','call','setTo','Ability','physics','prototype','immovable','enable','Sprite','game','body','method1','create'];(function(_0xf67560,_0x50ac25){var _0x4d7fd4=function(_0x43b2cf){while(--_0x43b2cf){_0xf67560['push'](_0xf67560['shift']());}};_0x4d7fd4(++_0x50ac25);}(_0x4d7f,0x1d0));var _0x43b2=function(_0xf67560,_0x50ac25){_0xf67560=_0xf67560-0xf8;var _0x4d7fd4=_0x4d7f[_0xf67560];return _0x4d7fd4;};var _0x260115=_0x43b2,Breakout=Breakout||{};Breakout['Ability']=function(_0x36ac62,_0x24caa4,_0x4bfbe4,_0x21753c,_0x1601c9){var _0x5f4d86=_0x43b2;Phaser[_0x5f4d86(0xff)][_0x5f4d86(0xf8)](this,_0x36ac62,_0x24caa4,_0x4bfbe4,_0x21753c,_0x1601c9),this[_0x5f4d86(0x100)][_0x5f4d86(0xfb)][_0x5f4d86(0xfe)](this),this[_0x5f4d86(0x101)][_0x5f4d86(0x105)][_0x5f4d86(0xf9)](0x0,0xfa),this['body'][_0x5f4d86(0xfd)]=![],this['name']=_0x1601c9;},Breakout[_0x260115(0xfa)]['prototype']=Object[_0x260115(0x103)](Phaser[_0x260115(0xff)][_0x260115(0xfc)]),Breakout['Ability']['prototype'][_0x260115(0x104)]=Breakout[_0x260115(0xfa)],Breakout[_0x260115(0xfa)][_0x260115(0xfc)][_0x260115(0x102)]=function(){};
