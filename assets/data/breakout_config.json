@@ -1,0 +1,72 @@
+{
+    "bricks": 
+        [
+            {
+                "name": "light-blue-tile",
+                "difficulty": 1,
+                "broken": "light-blue-tile-broken"
+            },
+            {
+                "name": "blue-tile",
+                "difficulty": 2,
+                "broken": "blue-tile-broken"
+            },
+            {
+                "name": "yellow-tile",
+                "difficulty": 3,
+                "broken": "yellow-tile-broken"
+            },
+            {
+                "name": "green-tile",
+                "difficulty": 4,
+                "broken": "green-tile-broken"
+            },
+            {
+                "name": "dark-green-tile",
+                "difficulty": 1,
+                "broken": "dark-green-tile-broken"
+            },
+            {
+                "name": "orange-tile",
+                "difficulty": 2,
+                "broken": "orange-tile-broken"
+            },
+            {
+                "name": "purple-tile",
+                "difficulty": 3,
+                "broken": "purple-tile-broken"
+            },
+            {
+                "name": "red-tile",
+                "difficulty": 4,
+                "broken": "red-tile-broken"
+            }
+        ],
+    "abilities":
+    [
+       {
+        "name": "board-shrink"
+       },
+       {
+        "name": "board-grow"
+       },
+       {
+        "name": "board-many-balls"
+       },
+       {
+        "name": "board-slow"
+       },
+       {
+        "name": "board-fast"
+       },
+       {
+        "name": "board-laser"
+       },
+       {
+        "name": "board-500"
+       },
+       {
+        "name": "heart"
+       }
+    ]
+}
